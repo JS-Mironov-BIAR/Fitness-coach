@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,6 +18,9 @@ export const metadata: Metadata = {
   description: "Программы тренировок и питания, разбор техники. Гомель, онлайн и очно.",
 };
 
+// Ставим класс темы до отрисовки, чтобы не было мигания (FOUC)
+const themeInit = `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +31,12 @@ export default function RootLayout({
       lang="ru"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeInit}
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }

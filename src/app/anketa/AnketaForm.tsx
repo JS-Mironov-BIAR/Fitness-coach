@@ -8,7 +8,7 @@ type Values = Record<string, string>;
 type Status = "idle" | "submitting" | "success" | "error";
 
 const inputClass =
-  "w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200";
+  "w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200 dark:border-white/10 dark:bg-white/5 dark:text-zinc-100 dark:placeholder-zinc-500";
 
 function Field({
   field,
@@ -21,7 +21,7 @@ function Field({
 }) {
   return (
     <div className={field.full ? "sm:col-span-2" : ""}>
-      <label htmlFor={field.name} className="mb-1.5 block text-sm font-medium text-zinc-700">
+      <label htmlFor={field.name} className="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
         {field.label}
         {field.required && <span className="text-rose-500"> *</span>}
       </label>
@@ -102,12 +102,12 @@ export default function AnketaForm() {
 
   if (status === "success") {
     return (
-      <div className="rounded-2xl border border-rose-100 bg-white p-8 text-center shadow-sm">
+      <div className="rounded-2xl border border-rose-100 bg-white p-8 text-center shadow-sm dark:border-white/10 dark:bg-white/5">
         <div className="text-4xl">💜</div>
-        <h2 className="mt-4 text-2xl font-semibold text-zinc-900">Спасибо! Анкета отправлена</h2>
-        <p className="mt-3 text-zinc-600">
-          Я посмотрю твои ответы и свяжусь с тобой в ближайшее время. Без спешки и
-          без навязывания — обсудим, как тебе помочь.
+        <h2 className="mt-4 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Спасибо! Анкета отправлена</h2>
+        <p className="mt-3 text-zinc-600 dark:text-zinc-400">
+          Я посмотрю твои ответы и свяжусь с тобой в ближайшее время. Без спешки и без
+          навязывания — обсудим, как тебе помочь.
         </p>
         <Link
           href="/"
@@ -124,26 +124,23 @@ export default function AnketaForm() {
       {ANKETA_GROUPS.map((group) => (
         <fieldset
           key={group.title}
-          className="rounded-2xl border border-rose-100 bg-white p-6 shadow-sm"
+          className="rounded-2xl border border-rose-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/5"
         >
-          <legend className="px-1 text-lg font-semibold text-rose-700">
+          <legend className="px-1 text-lg font-semibold text-rose-700 dark:text-rose-300">
             {group.emoji} {group.title}
           </legend>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {group.fields.map((field) => (
-              <Field
-                key={field.name}
-                field={field}
-                value={values[field.name] ?? ""}
-                onChange={update}
-              />
+              <Field key={field.name} field={field} value={values[field.name] ?? ""} onChange={update} />
             ))}
           </div>
         </fieldset>
       ))}
 
       {status === "error" && (
-        <p className="rounded-xl bg-rose-50 px-4 py-3 text-center text-rose-600">{errorMsg}</p>
+        <p className="rounded-xl bg-rose-50 px-4 py-3 text-center text-rose-600 dark:bg-rose-500/10 dark:text-rose-300">
+          {errorMsg}
+        </p>
       )}
 
       <button
@@ -154,7 +151,7 @@ export default function AnketaForm() {
         {status === "submitting" ? "Отправляем…" : "Отправить анкету"}
       </button>
 
-      <p className="text-center text-sm text-zinc-400">Поля со звёздочкой * — обязательные</p>
+      <p className="text-center text-sm text-zinc-400 dark:text-zinc-500">Поля со звёздочкой * — обязательные</p>
     </form>
   );
 }

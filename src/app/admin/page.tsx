@@ -33,7 +33,15 @@ export default async function AdminLeadsPage() {
             <h1 className="text-2xl font-bold text-zinc-900">Заявки</h1>
             <p className="text-sm text-zinc-500">Всего: {leads.length}</p>
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-2">
+            <Link
+              href="/admin/calendar"
+              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-white"
+            >
+              Расписание
+            </Link>
+            <LogoutButton />
+          </div>
         </div>
 
         {error && (

@@ -28,3 +28,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   return NextResponse.json({ ok: true });
 }
+
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { error } = await supabaseAdmin().from("leads").delete().eq("id", id);
+  if (error) {
+    console.error("Ошибка удаления заявки:", error);
+    return NextResponse.json({ error: "Не удалось удалить" }, { status: 500 });
+  }
+  return NextResponse.json({ ok: true });
+}

@@ -103,6 +103,13 @@ export const ANKETA_GROUPS: AnketaGroup[] = [
     emoji: "📋",
     fields: [
       { name: "current_program", label: "Тренируешься сейчас? Опиши программу", type: "textarea", full: true },
+      {
+        name: "tried",
+        label: "Что уже пробовала?",
+        type: "textarea",
+        full: true,
+        placeholder: "например: дефицит калорий, голодания, тренировки на улице, занятия с тренером…",
+      },
       { name: "stuck_points", label: "Что не получается или где застопорился прогресс?", type: "textarea", full: true },
     ],
   },

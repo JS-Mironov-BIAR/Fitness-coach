@@ -17,7 +17,20 @@ export default function LeadControls({
   const [notes, setNotes] = useState(initialNotes);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const router = useRouter();
+
+  async function remove() {
+    if (!confirm("Удалить заявку безвозвратно?")) return;
+    setDeleting(true);
+    const res = await fetch(`/api/admin/leads/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      router.push("/admin");
+      router.refresh();
+    } else {
+      setDeleting(false);
+    }
+  }
 
   async function save() {
     setSaving(true);
@@ -75,6 +88,16 @@ export default function LeadControls({
           {saving ? "Сохраняем…" : "Сохранить"}
         </button>
         {saved && <span className="text-sm text-emerald-600">Сохранено ✓</span>}
+      </div>
+
+      <div className="mt-4 border-t border-zinc-100 pt-4">
+        <button
+          onClick={remove}
+          disabled={deleting}
+          className="text-sm font-medium text-zinc-500 transition hover:text-rose-600 disabled:opacity-60"
+        >
+          {deleting ? "Удаляем…" : "Удалить заявку"}
+        </button>
       </div>
     </div>
   );
