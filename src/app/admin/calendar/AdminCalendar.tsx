@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SLOT_FORMATS, CONTACT_METHODS, formatLabel, type Slot } from "@/lib/booking";
-import { PlusIcon, TrashIcon, LockIcon, ClockIcon, CalendarIcon, CheckIcon, CloseIcon } from "@/components/icons";
+import { PlusIcon, TrashIcon, LockIcon, ClockIcon, CalendarIcon, CheckIcon, CloseIcon, HeartIcon } from "@/components/icons";
 
 export type AdminBooking = {
   id: string;
@@ -12,6 +12,13 @@ export type AdminBooking = {
   contact_method: string | null;
   contact_value: string | null;
   comment: string | null;
+};
+
+export type LeadOption = {
+  id: string;
+  name: string | null;
+  contact_method: string | null;
+  contact_value: string | null;
 };
 
 const WEEKDAYS = [
@@ -25,7 +32,7 @@ const WEEKDAYS = [
 ];
 
 const inputCls =
-  "mt-1.5 w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200";
+  "mt-1.5 w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200";
 
 function dayDate(iso: string) {
   const d = new Date(iso);
@@ -41,9 +48,11 @@ function timeLabel(iso: string) {
 export default function AdminCalendar({
   initialSlots,
   initialBookings,
+  leads,
 }: {
   initialSlots: Slot[];
   initialBookings: AdminBooking[];
+  leads: LeadOption[];
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -57,7 +66,7 @@ export default function AdminCalendar({
   const [format, setFormat] = useState<string>(SLOT_FORMATS[0].value);
   const [duration, setDuration] = useState("60");
 
-  // генерация на период
+  // генерация свободных слотов на период
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [weekdays, setWeekdays] = useState<number[]>([1, 2, 3, 4, 5]);
@@ -66,6 +75,19 @@ export default function AdminCalendar({
   const [step, setStep] = useState("60");
   const [genFormat, setGenFormat] = useState<string>(SLOT_FORMATS[0].value);
   const [genDuration, setGenDuration] = useState("60");
+
+  // вести клиента на период
+  const [rcLead, setRcLead] = useState("");
+  const [rcName, setRcName] = useState("");
+  const [rcMethod, setRcMethod] = useState<string>(CONTACT_METHODS[0]);
+  const [rcValue, setRcValue] = useState("");
+  const [rcComment, setRcComment] = useState("");
+  const [rcFormat, setRcFormat] = useState<string>(SLOT_FORMATS[0].value);
+  const [rcWeekdays, setRcWeekdays] = useState<number[]>([1]);
+  const [rcTimes, setRcTimes] = useState("18:00");
+  const [rcFrom, setRcFrom] = useState("");
+  const [rcTo, setRcTo] = useState("");
+  const [rcDuration, setRcDuration] = useState("60");
 
   const bookingBySlot = new Map<string, AdminBooking>();
   for (const b of initialBookings) {
@@ -88,6 +110,11 @@ export default function AdminCalendar({
     } finally {
       setBusy(false);
     }
+  }
+
+  function pickLead(id: string, set: (l: LeadOption | null) => void) {
+    const l = leads.find((x) => x.id === id) ?? null;
+    set(l);
   }
 
   async function addSlots(e: React.FormEvent) {
@@ -120,12 +147,31 @@ export default function AdminCalendar({
         duration_min: Number(genDuration),
       }),
     });
-    if (r.ok) setInfo(`Создано слотов: ${r.count ?? 0}`);
+    if (r.ok) setInfo(`Создано свободных слотов: ${r.count ?? 0}`);
   }
 
-  function toggleWeekday(d: number) {
-    setWeekdays((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]));
+  async function leadClient(e: React.FormEvent) {
+    e.preventDefault();
+    const r = await call("/api/admin/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mode: "recurring",
+        name: rcName,
+        contact_method: rcMethod,
+        contact_value: rcValue,
+        comment: rcComment,
+        format: rcFormat,
+        weekdays: rcWeekdays,
+        times: rcTimes,
+        from: rcFrom,
+        to: rcTo,
+        duration_min: Number(rcDuration),
+      }),
+    });
+    if (r.ok) setInfo(`Закреплено занятий за клиентом: ${r.count ?? 0}`);
   }
+
   function setStatus(id: string, status: "open" | "blocked") {
     return call(`/api/admin/slots/${id}`, {
       method: "PATCH",
@@ -166,12 +212,138 @@ export default function AdminCalendar({
         </p>
       )}
 
-      {/* Генерация на период */}
-      <form onSubmit={generate} className="rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
+      {/* Вести клиента на период */}
+      <form onSubmit={leadClient} className="rounded-2xl border border-rose-200 bg-white p-6 shadow-sm">
         <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900">
-          <CalendarIcon className="h-5 w-5 text-rose-500" /> Расписание на период
+          <HeartIcon className="h-5 w-5 text-rose-500" /> Вести клиента на период
         </h2>
-        <p className="mt-1 text-sm text-zinc-500">Рабочие часы и дни недели — слоты создадутся на весь период.</p>
+        <p className="mt-1 text-sm text-zinc-500">
+          Закрепить занятия за человеком на месяцы вперёд — даты сразу станут занятыми.
+        </p>
+
+        <label className="mt-4 block text-sm font-medium text-zinc-700">
+          Из заявки (необязательно)
+          <select
+            value={rcLead}
+            onChange={(e) => {
+              setRcLead(e.target.value);
+              pickLead(e.target.value, (l) => {
+                if (l) {
+                  setRcName(l.name ?? "");
+                  setRcMethod(l.contact_method || CONTACT_METHODS[0]);
+                  setRcValue(l.contact_value ?? "");
+                }
+              });
+            }}
+            className={inputCls}
+          >
+            <option value="">— ввести вручную —</option>
+            {leads.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name || "Без имени"} {l.contact_value ? `· ${l.contact_value}` : ""}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="text-sm font-medium text-zinc-700">
+            Имя клиента
+            <input value={rcName} required onChange={(e) => setRcName(e.target.value)} className={inputCls} placeholder="Имя" />
+          </label>
+          <div className="flex gap-2">
+            <label className="text-sm font-medium text-zinc-700">
+              Связь
+              <select value={rcMethod} onChange={(e) => setRcMethod(e.target.value)} className={`${inputCls} min-w-[7rem]`}>
+                {CONTACT_METHODS.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex-1 text-sm font-medium text-zinc-700">
+              Контакт
+              <input value={rcValue} onChange={(e) => setRcValue(e.target.value)} className={inputCls} placeholder="@ник / телефон" />
+            </label>
+          </div>
+        </div>
+
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="text-sm font-medium text-zinc-700">
+            С даты
+            <input type="date" value={rcFrom} required onChange={(e) => setRcFrom(e.target.value)} className={inputCls} />
+          </label>
+          <label className="text-sm font-medium text-zinc-700">
+            По дату
+            <input type="date" value={rcTo} required onChange={(e) => setRcTo(e.target.value)} className={inputCls} />
+          </label>
+        </div>
+
+        <div className="mt-3">
+          <span className="text-sm font-medium text-zinc-700">Дни недели</span>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {WEEKDAYS.map((w) => {
+              const on = rcWeekdays.includes(w.d);
+              return (
+                <button
+                  key={w.d}
+                  type="button"
+                  onClick={() => setRcWeekdays((p) => (p.includes(w.d) ? p.filter((x) => x !== w.d) : [...p, w.d]))}
+                  className={`h-9 w-11 rounded-lg text-sm font-medium transition ${
+                    on ? "bg-rose-500 text-white" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  }`}
+                >
+                  {w.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <label className="text-sm font-medium text-zinc-700">
+            Время (через запятую)
+            <input value={rcTimes} onChange={(e) => setRcTimes(e.target.value)} className={inputCls} placeholder="18:00" />
+          </label>
+          <label className="text-sm font-medium text-zinc-700">
+            Формат
+            <select value={rcFormat} onChange={(e) => setRcFormat(e.target.value)} className={inputCls}>
+              {SLOT_FORMATS.map((f) => (
+                <option key={f.value} value={f.value}>
+                  {f.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="text-sm font-medium text-zinc-700">
+            Длит., мин
+            <input type="number" value={rcDuration} min={15} step={15} onChange={(e) => setRcDuration(e.target.value)} className={inputCls} />
+          </label>
+        </div>
+
+        <input
+          value={rcComment}
+          onChange={(e) => setRcComment(e.target.value)}
+          className={inputCls}
+          placeholder="Заметка (по желанию)"
+        />
+
+        <button
+          type="submit"
+          disabled={busy}
+          className="mt-4 rounded-full bg-rose-500 px-6 py-2.5 font-medium text-white transition hover:bg-rose-600 disabled:opacity-60"
+        >
+          {busy ? "Записываем…" : "Закрепить за клиентом"}
+        </button>
+      </form>
+
+      {/* Генерация свободных слотов */}
+      <form onSubmit={generate} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-zinc-900">
+          <CalendarIcon className="h-5 w-5 text-rose-500" /> Свободные слоты на период
+        </h2>
+        <p className="mt-1 text-sm text-zinc-500">Рабочие часы и дни недели — открытые слоты на весь период.</p>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <label className="text-sm font-medium text-zinc-700">
@@ -193,7 +365,7 @@ export default function AdminCalendar({
                 <button
                   key={w.d}
                   type="button"
-                  onClick={() => toggleWeekday(w.d)}
+                  onClick={() => setWeekdays((p) => (p.includes(w.d) ? p.filter((x) => x !== w.d) : [...p, w.d]))}
                   className={`h-9 w-11 rounded-lg text-sm font-medium transition ${
                     on ? "bg-rose-500 text-white" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
                   }`}
@@ -238,9 +410,9 @@ export default function AdminCalendar({
         <button
           type="submit"
           disabled={busy}
-          className="mt-4 rounded-full bg-rose-500 px-6 py-2.5 font-medium text-white transition hover:bg-rose-600 disabled:opacity-60"
+          className="mt-4 rounded-full border border-rose-300 px-6 py-2.5 font-medium text-rose-600 transition hover:bg-rose-50 disabled:opacity-60"
         >
-          {busy ? "Создаём…" : "Сгенерировать расписание"}
+          {busy ? "Создаём…" : "Создать свободные слоты"}
         </button>
       </form>
 
@@ -256,14 +428,7 @@ export default function AdminCalendar({
           </label>
           <label className="text-sm font-medium text-zinc-700">
             Время (через запятую)
-            <input
-              type="text"
-              value={times}
-              required
-              placeholder="10, 11, 12:30, 18"
-              onChange={(e) => setTimes(e.target.value)}
-              className={inputCls}
-            />
+            <input type="text" value={times} required placeholder="10, 11, 12:30, 18" onChange={(e) => setTimes(e.target.value)} className={inputCls} />
           </label>
           <label className="text-sm font-medium text-zinc-700">
             Формат
@@ -284,7 +449,7 @@ export default function AdminCalendar({
         <button
           type="submit"
           disabled={busy}
-          className="mt-4 rounded-full border border-rose-300 px-6 py-2.5 font-medium text-rose-600 transition hover:bg-rose-50 disabled:opacity-60"
+          className="mt-4 rounded-full border border-zinc-300 px-6 py-2.5 font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-60"
         >
           {busy ? "Сохраняем…" : "Добавить"}
         </button>
@@ -341,14 +506,10 @@ export default function AdminCalendar({
                             · {formatLabel(s.format)} · {s.duration_min} мин
                           </span>
                           {s.status === "blocked" && (
-                            <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs font-medium text-zinc-600">
-                              закрыто
-                            </span>
+                            <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs font-medium text-zinc-600">закрыто</span>
                           )}
                           {s.status === "open" && (
-                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">
-                              свободно
-                            </span>
+                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">свободно</span>
                           )}
                         </div>
                         <div className="flex shrink-0 items-center gap-1">
@@ -424,6 +585,7 @@ export default function AdminCalendar({
         <AssignModal
           slot={assignSlot}
           busy={busy}
+          leads={leads}
           onClose={() => setAssignSlot(null)}
           onDone={() => setAssignSlot(null)}
           submit={async (payload) => {
@@ -443,21 +605,19 @@ export default function AdminCalendar({
 function AssignModal({
   slot,
   busy,
+  leads,
   onClose,
   onDone,
   submit,
 }: {
   slot: Slot;
   busy: boolean;
+  leads: LeadOption[];
   onClose: () => void;
   onDone: () => void;
-  submit: (payload: {
-    name: string;
-    contact_method: string;
-    contact_value: string;
-    comment: string;
-  }) => Promise<boolean>;
+  submit: (payload: { name: string; contact_method: string; contact_value: string; comment: string }) => Promise<boolean>;
 }) {
+  const [leadId, setLeadId] = useState("");
   const [name, setName] = useState("");
   const [method, setMethod] = useState<string>(CONTACT_METHODS[0]);
   const [value, setValue] = useState("");
@@ -471,6 +631,9 @@ function AssignModal({
     minute: "2-digit",
   });
 
+  const modalInput =
+    "w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200";
+
   async function handle(e: React.FormEvent) {
     e.preventDefault();
     const ok = await submit({ name, contact_method: method, contact_value: value, comment });
@@ -479,7 +642,7 @@ function AssignModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 text-zinc-900 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-lg font-semibold text-zinc-900">Закрепить за человеком</h3>
@@ -490,24 +653,38 @@ function AssignModal({
           </button>
         </div>
         <form onSubmit={handle} className="mt-4 space-y-3">
-          <input className={inputCls} placeholder="Имя *" value={name} required onChange={(e) => setName(e.target.value)} />
+          <select
+            value={leadId}
+            onChange={(e) => {
+              setLeadId(e.target.value);
+              const l = leads.find((x) => x.id === e.target.value);
+              if (l) {
+                setName(l.name ?? "");
+                setMethod(l.contact_method || CONTACT_METHODS[0]);
+                setValue(l.contact_value ?? "");
+              }
+            }}
+            className={modalInput}
+          >
+            <option value="">— выбрать из заявок —</option>
+            {leads.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name || "Без имени"} {l.contact_value ? `· ${l.contact_value}` : ""}
+              </option>
+            ))}
+          </select>
+          <input className={modalInput} placeholder="Имя *" value={name} required onChange={(e) => setName(e.target.value)} />
           <div className="flex gap-2">
-            <select className={`${inputCls} max-w-[10rem]`} value={method} onChange={(e) => setMethod(e.target.value)}>
+            <select className={`${modalInput} max-w-[10rem]`} value={method} onChange={(e) => setMethod(e.target.value)}>
               {CONTACT_METHODS.map((m) => (
                 <option key={m} value={m}>
                   {m}
                 </option>
               ))}
             </select>
-            <input className={inputCls} placeholder="@ник или телефон" value={value} onChange={(e) => setValue(e.target.value)} />
+            <input className={modalInput} placeholder="@ник или телефон" value={value} onChange={(e) => setValue(e.target.value)} />
           </div>
-          <textarea
-            className={inputCls}
-            placeholder="Заметка (по желанию)"
-            rows={2}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
+          <textarea className={modalInput} placeholder="Заметка (по желанию)" rows={2} value={comment} onChange={(e) => setComment(e.target.value)} />
           <button
             type="submit"
             disabled={busy}

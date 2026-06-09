@@ -2,6 +2,7 @@ import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { statusMeta } from "@/lib/leads";
 import LogoutButton from "./LogoutButton";
+import AdminNav from "@/components/AdminNav";
 
 export const dynamic = "force-dynamic";
 
@@ -28,20 +29,13 @@ export default async function AdminLeadsPage() {
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-8 font-sans">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-zinc-900">Заявки</h1>
-            <p className="text-sm text-zinc-500">Всего: {leads.length}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/admin/calendar"
-              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-white"
-            >
-              Расписание
-            </Link>
-            <LogoutButton />
-          </div>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <AdminNav />
+          <LogoutButton />
+        </div>
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-zinc-900">Заявки</h1>
+          <p className="text-sm text-zinc-500">Всего: {leads.length}</p>
         </div>
 
         {error && (

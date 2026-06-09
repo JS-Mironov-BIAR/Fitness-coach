@@ -29,3 +29,33 @@ export async function sendTelegramMessage(text: string): Promise<void> {
     }),
   );
 }
+
+// Отправка PDF-документа всем chat_id
+export async function sendTelegramDocument(
+  filename: string,
+  data: ArrayBuffer,
+  caption?: string,
+): Promise<void> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatRaw = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatRaw) {
+    throw new Error("Telegram не настроен (нет токена или chat_id)");
+  }
+  const chatIds = chatRaw.split(",").map((s) => s.trim()).filter(Boolean);
+
+  for (const chatId of chatIds) {
+    const fd = new FormData();
+    fd.append("chat_id", chatId);
+    if (caption) fd.append("caption", caption);
+    fd.append("document", new Blob([data], { type: "application/pdf" }), filename);
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+      method: "POST",
+      body: fd,
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      console.error("Telegram: ошибка документа", chatId, res.status, body);
+      throw new Error("Telegram отклонил документ");
+    }
+  }
+}

@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LEAD_STATUSES } from "@/lib/leads";
 
+const fieldCls =
+  "mt-1.5 w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200";
+
 export default function LeadControls({
   id,
   initialStatus,
@@ -17,20 +20,9 @@ export default function LeadControls({
   const [notes, setNotes] = useState(initialNotes);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const router = useRouter();
-
-  async function remove() {
-    if (!confirm("Удалить заявку безвозвратно?")) return;
-    setDeleting(true);
-    const res = await fetch(`/api/admin/leads/${id}`, { method: "DELETE" });
-    if (res.ok) {
-      router.push("/admin");
-      router.refresh();
-    } else {
-      setDeleting(false);
-    }
-  }
 
   async function save() {
     setSaving(true);
@@ -47,6 +39,18 @@ export default function LeadControls({
     }
   }
 
+  async function confirmDelete() {
+    setDeleting(true);
+    const res = await fetch(`/api/admin/leads/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      router.push("/admin");
+      router.refresh();
+    } else {
+      setDeleting(false);
+      setConfirmOpen(false);
+    }
+  }
+
   return (
     <div className="rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
       <h2 className="text-lg font-semibold text-zinc-900">Работа с заявкой</h2>
@@ -58,7 +62,7 @@ export default function LeadControls({
           setStatus(e.target.value);
           setSaved(false);
         }}
-        className="mt-1.5 w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200"
+        className={fieldCls}
       >
         {LEAD_STATUSES.map((s) => (
           <option key={s.value} value={s.value}>
@@ -76,7 +80,7 @@ export default function LeadControls({
           setSaved(false);
         }}
         placeholder="Договорённости, что отправлено, дата оплаты…"
-        className="mt-1.5 w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200"
+        className={fieldCls}
       />
 
       <div className="mt-4 flex items-center gap-3">
@@ -92,13 +96,43 @@ export default function LeadControls({
 
       <div className="mt-4 border-t border-zinc-100 pt-4">
         <button
-          onClick={remove}
-          disabled={deleting}
-          className="text-sm font-medium text-zinc-500 transition hover:text-rose-600 disabled:opacity-60"
+          onClick={() => setConfirmOpen(true)}
+          className="text-sm font-medium text-zinc-500 transition hover:text-rose-600"
         >
-          {deleting ? "Удаляем…" : "Удалить заявку"}
+          Удалить заявку
         </button>
       </div>
+
+      {confirmOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => !deleting && setConfirmOpen(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-zinc-900">Удалить заявку?</h3>
+            <p className="mt-2 text-sm text-zinc-500">Действие необратимо — заявка исчезнет навсегда.</p>
+            <div className="mt-5 flex justify-center gap-3">
+              <button
+                onClick={() => setConfirmOpen(false)}
+                disabled={deleting}
+                className="rounded-full border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-60"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleting}
+                className="rounded-full bg-rose-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-rose-600 disabled:opacity-60"
+              >
+                {deleting ? "Удаляем…" : "Удалить"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

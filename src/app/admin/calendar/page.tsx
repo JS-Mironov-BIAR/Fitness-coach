@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import type { Slot } from "@/lib/booking";
-import AdminCalendar, { type AdminBooking } from "./AdminCalendar";
+import AdminNav from "@/components/AdminNav";
+import LogoutButton from "@/app/admin/LogoutButton";
+import AdminCalendar, { type AdminBooking, type LeadOption } from "./AdminCalendar";
 
 export const dynamic = "force-dynamic";
 
@@ -29,27 +30,30 @@ export default async function AdminCalendarPage() {
     bookings = (bookingData ?? []) as AdminBooking[];
   }
 
+  const { data: leadData } = await sb
+    .from("leads")
+    .select("id, name, contact_method, contact_value")
+    .order("created_at", { ascending: false })
+    .limit(200);
+  const leads = (leadData ?? []) as LeadOption[];
+
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-8 font-sans">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-zinc-900">Дневник записей</h1>
-            <p className="text-sm text-zinc-500">Слотов впереди: {slots.length}</p>
-          </div>
-          <Link
-            href="/admin"
-            className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-white"
-          >
-            ← Заявки
-          </Link>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <AdminNav />
+          <LogoutButton />
+        </div>
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-zinc-900">Расписание и дневник</h1>
+          <p className="text-sm text-zinc-500">Слотов впереди: {slots.length}</p>
         </div>
 
         {error && (
           <p className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-rose-600">Ошибка загрузки: {error.message}</p>
         )}
 
-        <AdminCalendar initialSlots={slots} initialBookings={bookings} />
+        <AdminCalendar initialSlots={slots} initialBookings={bookings} leads={leads} />
       </div>
     </main>
   );
