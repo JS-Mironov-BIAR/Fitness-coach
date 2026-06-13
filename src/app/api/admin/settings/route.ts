@@ -21,6 +21,7 @@ export async function POST(req: Request) {
       seo_description: clean(b.seo_description),
       seo_keywords: clean(b.seo_keywords),
       accent_theme: clean(b.accent_theme) ?? "violet",
+      instagram_posts: clean(b.instagram_posts),
     })
     .eq("id", 1);
 

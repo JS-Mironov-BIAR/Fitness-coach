@@ -74,6 +74,7 @@ export default function AnketaForm() {
   const [values, setValues] = useState<Values>({});
   const [hp, setHp] = useState("");
   const [token, setToken] = useState("");
+  const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -158,6 +159,23 @@ export default function AnketaForm() {
           {errorMsg}
         </p>
       )}
+
+      <label className="flex items-start gap-2.5 text-sm text-zinc-600 dark:text-zinc-400">
+        <input
+          type="checkbox"
+          required
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 accent-violet-500"
+        />
+        <span>
+          Я согласен(на) на{" "}
+          <Link href="/privacy" target="_blank" className="text-violet-600 underline-offset-2 hover:underline dark:text-violet-300">
+            обработку моих данных
+          </Link>{" "}
+          для подбора программы и связи со мной.
+        </span>
+      </label>
 
       <Turnstile onToken={setToken} />
 

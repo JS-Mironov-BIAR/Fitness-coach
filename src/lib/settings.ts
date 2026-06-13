@@ -14,6 +14,7 @@ export type SiteSettings = {
   seo_description: string | null;
   seo_keywords: string | null;
   accent_theme: string | null;
+  instagram_posts: string | null;
 };
 
 const EMPTY: SiteSettings = {
@@ -27,6 +28,7 @@ const EMPTY: SiteSettings = {
   seo_description: null,
   seo_keywords: null,
   accent_theme: null,
+  instagram_posts: null,
 };
 
 export const ACCENT_THEMES = [
@@ -54,7 +56,7 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
     const { data } = await supabaseAdmin()
       .from("site_settings")
       .select(
-        "instagram_url, telegram_url, phone, hero_title, hero_subtitle, hero_badge, seo_title, seo_description, seo_keywords, accent_theme",
+        "instagram_url, telegram_url, phone, hero_title, hero_subtitle, hero_badge, seo_title, seo_description, seo_keywords, accent_theme, instagram_posts",
       )
       .eq("id", 1)
       .single();

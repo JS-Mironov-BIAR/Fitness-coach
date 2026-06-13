@@ -3,6 +3,7 @@ import Link from "next/link";
 import BookingCalendar from "@/components/BookingCalendar";
 import SiteHeader from "@/components/SiteHeader";
 import ScrollTopButton from "@/components/ScrollTopButton";
+import InstagramFeed from "@/components/InstagramFeed";
 import { getSiteSettings, SITE_DEFAULTS, SITE_URL } from "@/lib/settings";
 import {
   TargetIcon,
@@ -53,6 +54,12 @@ export default async function Home() {
   const heroTitle = s.hero_title || SITE_DEFAULTS.hero_title;
   const heroSubtitle = s.hero_subtitle || SITE_DEFAULTS.hero_subtitle;
   const seoDescription = s.seo_description || SITE_DEFAULTS.seo_description;
+
+  const igPosts = (s.instagram_posts || "")
+    .split(/\n+/)
+    .map((x) => x.trim())
+    .filter((x) => x.includes("instagram.com"))
+    .slice(0, 12);
 
   const socials = [
     s.instagram_url && { href: s.instagram_url, Icon: InstagramIcon, label: "Instagram", external: true },
@@ -129,6 +136,26 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Instagram */}
+      {igPosts.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 pb-20">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Я в Instagram</h2>
+            {s.instagram_url && (
+              <a
+                href={s.instagram_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="brand-gradient inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+              >
+                <InstagramIcon className="h-4 w-4" /> Подписаться
+              </a>
+            )}
+          </div>
+          <InstagramFeed posts={igPosts} />
+        </section>
+      )}
+
       <footer className="border-t border-zinc-100 py-8 text-center text-sm text-zinc-400 dark:border-white/10">
         {socials.length > 0 && (
           <div className="mb-4 flex justify-center gap-3">
@@ -146,6 +173,14 @@ export default async function Home() {
             ))}
           </div>
         )}
+        <div className="mb-3 flex justify-center gap-4 text-xs">
+          <Link href="/privacy" className="transition hover:text-violet-600 dark:hover:text-violet-300">
+            Политика данных
+          </Link>
+          <Link href="/terms" className="transition hover:text-violet-600 dark:hover:text-violet-300">
+            Условия
+          </Link>
+        </div>
         © {year} · halvafit · Гомель
       </footer>
 

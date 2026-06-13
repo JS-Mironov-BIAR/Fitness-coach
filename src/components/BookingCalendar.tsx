@@ -526,6 +526,13 @@ function BookingModal({
               >
                 {status === "sending" ? "Записываем…" : "Записаться"}
               </button>
+              <p className="text-center text-xs text-zinc-400 dark:text-zinc-500">
+                Записываясь, ты соглашаешься на{" "}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="underline">
+                  обработку данных
+                </a>
+                .
+              </p>
             </form>
           </>
         )}

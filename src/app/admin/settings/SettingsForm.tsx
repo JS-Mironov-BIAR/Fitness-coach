@@ -20,6 +20,7 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
     seo_description: initial.seo_description ?? "",
     seo_keywords: initial.seo_keywords ?? "",
     accent_theme: initial.accent_theme ?? "violet",
+    instagram_posts: initial.instagram_posts ?? "",
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -87,6 +88,19 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
         <label className="mt-3 block text-sm font-medium text-zinc-700">
           Телефон
           <input value={f.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+375 ..." className={inputCls} />
+        </label>
+        <label className="mt-3 block text-sm font-medium text-zinc-700">
+          Лента Instagram на главной — ссылки на посты (по одной на строку)
+          <textarea
+            value={f.instagram_posts}
+            onChange={(e) => set("instagram_posts", e.target.value)}
+            rows={4}
+            placeholder={"https://www.instagram.com/p/XXXX/\nhttps://www.instagram.com/reel/YYYY/"}
+            className={inputCls}
+          />
+          <span className="mt-1 block text-xs text-zinc-400">
+            Открой пост в Instagram → «...» → «Копировать ссылку». Покажем последние до 12 постов.
+          </span>
         </label>
       </section>
 
