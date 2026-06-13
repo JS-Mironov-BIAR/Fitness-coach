@@ -171,12 +171,20 @@ export function ListIcon(p: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function MenuIcon(p: SVGProps<SVGSVGElement>) {
+  return (
+    <Svg {...p}>
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </Svg>
+  );
+}
+
 export function InstagramIcon(p: SVGProps<SVGSVGElement>) {
   return (
     <Svg {...p}>
-      <rect width="20" height="20" x="2" y="2" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <path d="M17.5 6.5h.01" />
+      <rect width="18" height="18" x="3" y="3" rx="5.5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
     </Svg>
   );
 }
@@ -184,8 +192,8 @@ export function InstagramIcon(p: SVGProps<SVGSVGElement>) {
 export function TelegramIcon(p: SVGProps<SVGSVGElement>) {
   return (
     <Svg {...p}>
-      <path d="M22 2 11 13" />
-      <path d="M22 2 15 22l-4-9-9-4 20-7Z" />
+      <path d="M21.5 4.3 2.9 11.4c-.9.3-.9 1.5 0 1.8l4.6 1.5 1.8 5.4c.2.6 1 .8 1.5.3l2.6-2.4 4.7 3.5c.6.4 1.4 0 1.5-.7L23 5.3c.2-.8-.6-1.4-1.5-1z" />
+      <path d="m7.5 14.7 9.2-6.7-7 7.8" />
     </Svg>
   );
 }
