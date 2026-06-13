@@ -3,17 +3,34 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDownIcon } from "@/components/icons";
+import {
+  ChevronDownIcon,
+  InboxIcon,
+  CalendarIcon,
+  FileTextIcon,
+  MessageSquareIcon,
+  QrIcon,
+  SettingsIcon,
+  BookOpenIcon,
+  SparklesIcon,
+} from "@/components/icons";
 
-const TABS = [
-  { href: "/admin", label: "Заявки", match: (p: string) => p === "/admin" || p.startsWith("/admin/leads") },
-  { href: "/admin/calendar", label: "Расписание", match: (p: string) => p.startsWith("/admin/calendar") },
-  { href: "/admin/pdf", label: "PDF", match: (p: string) => p.startsWith("/admin/pdf") },
-  { href: "/admin/prompts", label: "Промпты", match: (p: string) => p.startsWith("/admin/prompts") },
-  { href: "/admin/qr", label: "QR", match: (p: string) => p.startsWith("/admin/qr") },
-  { href: "/admin/settings", label: "Настройки", match: (p: string) => p.startsWith("/admin/settings") },
-  { href: "/admin/guide", label: "Гайд", match: (p: string) => p.startsWith("/admin/guide") },
-  { href: "/admin/updates", label: "Обновления", match: (p: string) => p.startsWith("/admin/updates") },
+type Tab = {
+  href: string;
+  label: string;
+  Icon: React.ComponentType<{ className?: string }>;
+  match: (p: string) => boolean;
+};
+
+const TABS: Tab[] = [
+  { href: "/admin", label: "Заявки", Icon: InboxIcon, match: (p) => p === "/admin" || p.startsWith("/admin/leads") },
+  { href: "/admin/calendar", label: "Расписание", Icon: CalendarIcon, match: (p) => p.startsWith("/admin/calendar") },
+  { href: "/admin/pdf", label: "PDF", Icon: FileTextIcon, match: (p) => p.startsWith("/admin/pdf") },
+  { href: "/admin/prompts", label: "Промпты", Icon: MessageSquareIcon, match: (p) => p.startsWith("/admin/prompts") },
+  { href: "/admin/qr", label: "QR", Icon: QrIcon, match: (p) => p.startsWith("/admin/qr") },
+  { href: "/admin/settings", label: "Настройки", Icon: SettingsIcon, match: (p) => p.startsWith("/admin/settings") },
+  { href: "/admin/guide", label: "Гайд", Icon: BookOpenIcon, match: (p) => p.startsWith("/admin/guide") },
+  { href: "/admin/updates", label: "Обновления", Icon: SparklesIcon, match: (p) => p.startsWith("/admin/updates") },
 ];
 
 export default function AdminNav() {
@@ -30,7 +47,10 @@ export default function AdminNav() {
           onClick={() => setOpen((o) => !o)}
           className="flex w-full items-center justify-between gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-900"
         >
-          <span>{current.label}</span>
+          <span className="flex items-center gap-2">
+            <current.Icon className="h-4 w-4 text-violet-500" />
+            {current.label}
+          </span>
           <ChevronDownIcon className={`h-4 w-4 shrink-0 text-zinc-400 transition ${open ? "rotate-180" : ""}`} />
         </button>
         {open && (
@@ -44,10 +64,11 @@ export default function AdminNav() {
                     key={t.href}
                     href={t.href}
                     onClick={() => setOpen(false)}
-                    className={`block px-4 py-2.5 text-sm transition ${
+                    className={`flex items-center gap-2 px-4 py-2.5 text-sm transition ${
                       active ? "bg-violet-50 font-medium text-violet-700" : "text-zinc-700 hover:bg-zinc-50"
                     }`}
                   >
+                    <t.Icon className="h-4 w-4 shrink-0" />
                     {t.label}
                   </Link>
                 );
@@ -65,10 +86,11 @@ export default function AdminNav() {
             <Link
               key={t.href}
               href={t.href}
-              className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition ${
                 active ? "bg-violet-500 text-white" : "text-zinc-600 hover:bg-zinc-100"
               }`}
             >
+              <t.Icon className="h-4 w-4" />
               {t.label}
             </Link>
           );

@@ -55,6 +55,12 @@ export default async function Home() {
   const heroSubtitle = s.hero_subtitle || SITE_DEFAULTS.hero_subtitle;
   const seoDescription = s.seo_description || SITE_DEFAULTS.seo_description;
 
+  const headerSocials = [
+    s.instagram_url ? { href: s.instagram_url, type: "instagram" as const, label: "Instagram" } : null,
+    s.telegram_url ? { href: s.telegram_url, type: "telegram" as const, label: "Telegram" } : null,
+    s.phone ? { href: `tel:${s.phone.replace(/[^\d+]/g, "")}`, type: "phone" as const, label: s.phone } : null,
+  ].filter(Boolean) as { href: string; type: "instagram" | "telegram" | "phone"; label: string }[];
+
   const igPosts = (s.instagram_posts || "")
     .split(/\n+/)
     .map((x) => x.trim())
@@ -83,7 +89,7 @@ export default async function Home() {
     <main className="min-h-screen bg-gradient-to-b from-violet-50 via-white to-white font-sans dark:from-zinc-950 dark:via-zinc-950 dark:to-black">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <SiteHeader anketaLink />
+      <SiteHeader anketaLink socials={headerSocials} />
 
       {/* Hero */}
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-10 lg:grid-cols-2 lg:py-16">

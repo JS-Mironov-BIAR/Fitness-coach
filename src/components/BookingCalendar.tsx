@@ -497,13 +497,12 @@ function BookingModal({
               />
               <input className={inputClass} placeholder="Имя *" value={name} required onChange={(e) => setName(e.target.value)} />
               <div className="flex gap-2">
-                <Select wrapperClassName="w-36 shrink-0" value={method} onChange={(e) => setMethod(e.target.value)}>
-                  {CONTACT_METHODS.map((m) => (
-                    <option key={m} value={m}>
-                      {m}
-                    </option>
-                  ))}
-                </Select>
+                <Select
+                  wrapperClassName="w-36 shrink-0"
+                  value={method}
+                  onChange={setMethod}
+                  options={CONTACT_METHODS.map((m) => ({ value: m, label: m }))}
+                />
                 <input
                   className={`${inputClass} flex-1`}
                   placeholder="@ник или телефон *"

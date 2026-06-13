@@ -4,9 +4,21 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
-import { ChevronLeftIcon } from "@/components/icons";
+import { ChevronLeftIcon, InstagramIcon, TelegramIcon, PhoneIcon } from "@/components/icons";
 
-export default function SiteHeader({ back = false, anketaLink = false }: { back?: boolean; anketaLink?: boolean }) {
+export type HeaderSocial = { href: string; type: "instagram" | "telegram" | "phone"; label: string };
+
+const ICONS = { instagram: InstagramIcon, telegram: TelegramIcon, phone: PhoneIcon };
+
+export default function SiteHeader({
+  back = false,
+  anketaLink = false,
+  socials = [],
+}: {
+  back?: boolean;
+  anketaLink?: boolean;
+  socials?: HeaderSocial[];
+}) {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -30,7 +42,7 @@ export default function SiteHeader({ back = false, anketaLink = false }: { back?
           : "border-b border-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3.5">
         {back ? (
           <Link
             href="/"
@@ -43,7 +55,23 @@ export default function SiteHeader({ back = false, anketaLink = false }: { back?
             <Logo />
           </Link>
         )}
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-1.5">
+          {socials.map((s) => {
+            const Icon = ICONS[s.type];
+            return (
+              <a
+                key={s.label}
+                href={s.href}
+                target={s.type === "phone" ? undefined : "_blank"}
+                rel={s.type === "phone" ? undefined : "noopener noreferrer"}
+                aria-label={s.label}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 transition hover:border-violet-300 hover:text-violet-600 dark:border-white/10 dark:text-zinc-300"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            );
+          })}
           {anketaLink && !back && (
             <Link
               href="/anketa"

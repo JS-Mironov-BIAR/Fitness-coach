@@ -6,7 +6,7 @@ import { ANKETA_GROUPS, type AnketaField } from "@/lib/anketa";
 import Turnstile from "@/components/Turnstile";
 import Select from "@/components/ui/Select";
 import Checkbox from "@/components/ui/Checkbox";
-import { ChevronDownIcon } from "@/components/icons";
+import { ListIcon } from "@/components/icons";
 
 type Values = Record<string, string>;
 type Status = "idle" | "submitting" | "success" | "error";
@@ -42,19 +42,12 @@ function Field({
         />
       ) : field.type === "select" ? (
         <Select
-          id={field.name}
-          name={field.name}
           value={value}
           required={field.required}
-          onChange={(e) => onChange(field.name, e.target.value)}
-        >
-          <option value="">—</option>
-          {field.options?.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </Select>
+          placeholder="—"
+          options={(field.options ?? []).map((o) => ({ value: o, label: o }))}
+          onChange={(v) => onChange(field.name, v)}
+        />
       ) : (
         <input
           id={field.name}
@@ -75,35 +68,35 @@ function Field({
 function Toc() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="sticky top-[68px] z-20 mb-5">
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          className="flex w-full items-center justify-between rounded-xl border border-violet-200 bg-white/90 px-4 py-2.5 text-sm font-medium text-zinc-800 shadow-sm backdrop-blur dark:border-white/10 dark:bg-zinc-900/85 dark:text-zinc-100"
-        >
-          <span>Разделы анкеты — быстрый переход</span>
-          <ChevronDownIcon className={`h-4 w-4 shrink-0 text-zinc-400 transition ${open ? "rotate-180" : ""}`} />
-        </button>
-        {open && (
-          <>
-            <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-            <div className="absolute left-0 right-0 z-20 mt-1 max-h-72 overflow-y-auto rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-white/10 dark:bg-zinc-900">
-              {ANKETA_GROUPS.map((g, i) => (
-                <a
-                  key={g.title}
-                  href={`#g-${i}`}
-                  onClick={() => setOpen(false)}
-                  className="block px-4 py-2 text-sm text-zinc-700 transition hover:bg-violet-50 dark:text-zinc-300 dark:hover:bg-white/5"
-                >
-                  {i + 1}. {g.title}
-                </a>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Разделы анкеты"
+        className="fixed bottom-5 left-5 z-40 inline-flex h-11 items-center gap-1.5 rounded-full bg-white px-4 text-sm font-medium text-violet-700 shadow-lg ring-1 ring-violet-200 transition hover:bg-violet-50 dark:bg-zinc-900 dark:text-violet-300 dark:ring-white/10"
+      >
+        <ListIcon className="h-4 w-4" /> Разделы
+      </button>
+      {open && (
+        <div className="fixed inset-0 z-50 bg-black/30" onClick={() => setOpen(false)}>
+          <div
+            className="absolute bottom-20 left-5 max-h-[60vh] w-64 overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-1 shadow-2xl dark:border-white/10 dark:bg-zinc-900"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {ANKETA_GROUPS.map((g, i) => (
+              <a
+                key={g.title}
+                href={`#g-${i}`}
+                onClick={() => setOpen(false)}
+                className="block rounded-xl px-4 py-2 text-sm text-zinc-700 transition hover:bg-violet-50 dark:text-zinc-300 dark:hover:bg-white/5"
+              >
+                {i + 1}. {g.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

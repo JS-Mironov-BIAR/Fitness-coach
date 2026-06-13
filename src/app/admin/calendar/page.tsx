@@ -40,10 +40,6 @@ export default async function AdminCalendarPage() {
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-6 font-sans">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <AdminNav />
-          <LogoutButton />
-        </div>
         <div className="mb-5">
           <h1 className="text-2xl font-bold text-zinc-900">Расписание и дневник</h1>
           <p className="text-sm text-zinc-500">Слотов впереди: {slots.length}</p>

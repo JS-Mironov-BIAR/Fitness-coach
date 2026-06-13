@@ -70,10 +70,6 @@ export default function AdminUpdatesPage() {
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-6 font-sans">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <AdminNav />
-          <LogoutButton />
-        </div>
 
         <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
           <span className="brand-gradient inline-block rounded-full px-3 py-1 text-xs font-semibold text-white">

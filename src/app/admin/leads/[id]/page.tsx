@@ -38,8 +38,8 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
           })}
         </p>
 
-        {/* Навигация по карточке */}
-        <div className="mt-4 flex flex-wrap gap-2">
+        {/* Навигация по карточке (липкая) */}
+        <div className="sticky top-14 z-30 mt-4 flex flex-wrap gap-2 rounded-xl bg-zinc-50/90 py-2 backdrop-blur">
           <a href="#work" className="rounded-full border border-zinc-300 px-3.5 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-white">
             Статус и заметки
           </a>

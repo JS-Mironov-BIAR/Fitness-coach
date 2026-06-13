@@ -48,10 +48,6 @@ export default async function AdminPdfPage() {
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-6 font-sans">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <AdminNav />
-          <LogoutButton />
-        </div>
         <h1 className="mb-1 text-2xl font-bold text-zinc-900">Конструктор PDF</h1>
         <p className="mb-5 text-sm text-zinc-500">
           Выбери клиента, собери программу из блоков — справа живое превью. Скачай или отправь в Telegram. Файлы не
