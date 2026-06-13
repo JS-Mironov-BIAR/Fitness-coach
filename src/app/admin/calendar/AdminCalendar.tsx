@@ -13,7 +13,81 @@ import {
   CloseIcon,
   HeartIcon,
   ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@/components/icons";
+
+const OVERVIEW_WD = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+function MonthOverview({ dayStatus }: { dayStatus: Map<string, { booked: boolean; open: boolean; blocked: boolean }> }) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const [cur, setCur] = useState({ y: today.getFullYear(), m: today.getMonth() });
+
+  const first = new Date(cur.y, cur.m, 1);
+  const startIdx = (first.getDay() + 6) % 7;
+  const start = new Date(cur.y, cur.m, 1 - startIdx);
+  const days: Date[] = [];
+  const d = new Date(start);
+  for (let i = 0; i < 42; i++) {
+    days.push(new Date(d));
+    d.setDate(d.getDate() + 1);
+  }
+  const key = (x: Date) =>
+    `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
+  const monthLabel = first.toLocaleDateString("ru-RU", { month: "long", year: "numeric" });
+  const shift = (delta: number) =>
+    setCur((c) => {
+      const i = c.y * 12 + c.m + delta;
+      return { y: Math.floor(i / 12), m: ((i % 12) + 12) % 12 };
+    });
+
+  return (
+    <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+      <div className="mb-2 flex items-center justify-between">
+        <button type="button" onClick={() => shift(-1)} className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100">
+          <ChevronLeftIcon className="h-5 w-5" />
+        </button>
+        <span className="text-sm font-semibold capitalize text-zinc-800">{monthLabel}</span>
+        <button type="button" onClick={() => shift(1)} className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-100">
+          <ChevronRightIcon className="h-5 w-5" />
+        </button>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-medium text-zinc-400">
+        {OVERVIEW_WD.map((w) => (
+          <div key={w}>{w}</div>
+        ))}
+      </div>
+      <div className="mt-1 grid grid-cols-7 gap-1">
+        {days.map((x) => {
+          const k = key(x);
+          const inMonth = x.getMonth() === cur.m;
+          const st = dayStatus.get(k);
+          let cls = "flex h-9 items-center justify-center rounded-lg text-sm transition ";
+          if (!inMonth) cls += "text-zinc-300";
+          else if (st?.booked) cls += "bg-violet-500 font-semibold text-white hover:bg-violet-600";
+          else if (st?.open) cls += "bg-emerald-100 font-medium text-emerald-700 hover:bg-emerald-200";
+          else if (st?.blocked) cls += "bg-zinc-200 text-zinc-500";
+          else cls += "text-zinc-400";
+          return inMonth && st ? (
+            <a key={k} href={`#d-${k}`} className={cls}>
+              {x.getDate()}
+            </a>
+          ) : (
+            <div key={k} className={cls}>
+              {x.getDate()}
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-3 flex flex-wrap justify-center gap-3 text-xs text-zinc-500">
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-violet-500" /> запись</span>
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-emerald-100" /> свободно</span>
+        <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded bg-zinc-200" /> закрыто</span>
+      </div>
+    </div>
+  );
+}
 
 export type AdminBooking = {
   id: string;
@@ -266,6 +340,16 @@ export default function AdminCalendar({
     g.slots.push(s);
   }
 
+  const dayStatus = new Map<string, { booked: boolean; open: boolean; blocked: boolean }>();
+  for (const s of initialSlots) {
+    const k = dayDate(s.starts_at);
+    const cur = dayStatus.get(k) ?? { booked: false, open: false, blocked: false };
+    if (s.status === "booked") cur.booked = true;
+    else if (s.status === "blocked") cur.blocked = true;
+    else cur.open = true;
+    dayStatus.set(k, cur);
+  }
+
   const WD = (
     sel: number[],
     setter: (d: number) => void,
@@ -296,6 +380,8 @@ export default function AdminCalendar({
           {error || info}
         </p>
       )}
+
+      <MonthOverview dayStatus={dayStatus} />
 
       {/* Подсказка */}
       <Section title="Как вести график">
@@ -417,7 +503,7 @@ export default function AdminCalendar({
           const hasBlocked = g.slots.some((s) => s.status === "blocked");
           const isSel = selected.has(g.date);
           return (
-            <div key={g.date} className={`rounded-2xl border bg-white p-4 shadow-sm sm:p-5 ${isSel ? "border-violet-400 ring-1 ring-violet-300" : "border-zinc-200"}`}>
+            <div key={g.date} id={`d-${g.date}`} className={`scroll-mt-24 rounded-2xl border bg-white p-4 shadow-sm sm:p-5 ${isSel ? "border-violet-400 ring-1 ring-violet-300" : "border-zinc-200"}`}>
               <div className="mb-3 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   {selectMode && (

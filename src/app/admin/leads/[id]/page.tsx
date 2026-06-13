@@ -39,15 +39,24 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
         </p>
 
         {/* Навигация по карточке (липкая) */}
-        <div className="sticky top-14 z-30 mt-4 flex flex-wrap gap-2 rounded-xl bg-zinc-50/90 py-2 backdrop-blur">
-          <a href="#work" className="rounded-full border border-zinc-300 px-3.5 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-white">
-            Статус и заметки
+        <div className="sticky top-14 z-30 mt-4 flex flex-nowrap gap-2 rounded-xl bg-zinc-50/90 py-2 backdrop-blur">
+          <a
+            href="#work"
+            className="flex-1 rounded-full border border-zinc-300 px-3 py-1.5 text-center text-sm font-medium text-zinc-700 transition hover:bg-white sm:flex-none"
+          >
+            Заявка
           </a>
-          <a href="#prompt" className="rounded-full bg-violet-500 px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-violet-600">
-            ✨ Промпт для нейросети
+          <a
+            href="#prompt"
+            className="flex-1 rounded-full bg-violet-500 px-3 py-1.5 text-center text-sm font-medium text-white transition hover:bg-violet-600 sm:flex-none"
+          >
+            ✨ Промт
           </a>
-          <a href="#anketa" className="rounded-full border border-zinc-300 px-3.5 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-white">
-            Ответы анкеты
+          <a
+            href="#anketa"
+            className="flex-1 rounded-full border border-zinc-300 px-3 py-1.5 text-center text-sm font-medium text-zinc-700 transition hover:bg-white sm:flex-none"
+          >
+            Анкета
           </a>
         </div>
 
