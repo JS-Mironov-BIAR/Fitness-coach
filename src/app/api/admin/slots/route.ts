@@ -9,6 +9,38 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const sb = supabaseAdmin();
 
+  // ───── Очистить расписание: удалить все будущие слоты ─────
+  if (body.mode === "clearAll") {
+    const now = new Date().toISOString();
+    const { error } = await sb.from("slots").delete().gte("starts_at", now);
+    if (error) {
+      console.error("clearAll:", error);
+      return NextResponse.json({ error: "Не удалось очистить" }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true });
+  }
+
+  // ───── Групповое действие по выбранным дням ─────
+  if (body.mode === "bulkDays") {
+    const action = String(body.action ?? "");
+    const dates: string[] = Array.isArray(body.dates) ? body.dates.map(String) : [];
+    if (dates.length === 0 || !["delete", "block", "open"].includes(action)) {
+      return NextResponse.json({ error: "Нет выбранных дней" }, { status: 400 });
+    }
+    for (const date of dates) {
+      const start = new Date(`${date}T00:00:00`).toISOString();
+      const end = new Date(`${date}T23:59:59`).toISOString();
+      if (action === "delete") {
+        await sb.from("slots").delete().gte("starts_at", start).lte("starts_at", end);
+      } else if (action === "block") {
+        await sb.from("slots").update({ status: "blocked" }).gte("starts_at", start).lte("starts_at", end).eq("status", "open");
+      } else if (action === "open") {
+        await sb.from("slots").update({ status: "open" }).gte("starts_at", start).lte("starts_at", end).eq("status", "blocked");
+      }
+    }
+    return NextResponse.json({ ok: true });
+  }
+
   // ───── Блокировка / разблокировка всего дня (booked не трогаем) ─────
   if (body.mode === "blockDay") {
     const date = String(body.date ?? "");

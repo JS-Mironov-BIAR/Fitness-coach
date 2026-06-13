@@ -39,7 +39,7 @@ export default async function AdminLeadsPage() {
         </div>
 
         {error && (
-          <p className="rounded-xl bg-rose-50 px-4 py-3 text-rose-600">
+          <p className="rounded-xl bg-violet-50 px-4 py-3 text-violet-600">
             Ошибка загрузки: {error.message}
           </p>
         )}
@@ -57,7 +57,7 @@ export default async function AdminLeadsPage() {
               <Link
                 key={lead.id}
                 href={`/admin/leads/${lead.id}`}
-                className="block rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:border-rose-300 hover:shadow"
+                className="block rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:border-violet-300 hover:shadow"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">

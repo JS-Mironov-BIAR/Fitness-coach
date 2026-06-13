@@ -9,6 +9,6 @@ const PdfStudio = dynamic(() => import("./PdfStudio"), {
   loading: () => <div className="py-16 text-center text-zinc-400">Загрузка редактора…</div>,
 });
 
-export default function PdfStudioClient({ leads }: { leads: LeadFull[] }) {
-  return <PdfStudio leads={leads} />;
+export default function PdfStudioClient({ leads, contacts }: { leads: LeadFull[]; contacts: string }) {
+  return <PdfStudio leads={leads} contacts={contacts} />;
 }

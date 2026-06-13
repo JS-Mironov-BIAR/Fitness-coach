@@ -1,6 +1,6 @@
 // Статусы заявок для админки.
 export const LEAD_STATUSES = [
-  { value: "new", label: "Новая", badge: "bg-rose-100 text-rose-700" },
+  { value: "new", label: "Новая", badge: "bg-violet-100 text-violet-700" },
   { value: "contacted", label: "Связались", badge: "bg-amber-100 text-amber-700" },
   { value: "client", label: "Клиент", badge: "bg-emerald-100 text-emerald-700" },
   { value: "archived", label: "Архив", badge: "bg-zinc-100 text-zinc-600" },

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { LEAD_STATUSES } from "@/lib/leads";
 
 const fieldCls =
-  "mt-1.5 w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200";
+  "mt-1.5 w-full rounded-xl border border-violet-200 bg-violet-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none focus:border-violet-400 focus:bg-white focus:ring-2 focus:ring-violet-200";
 
 export default function LeadControls({
   id,
@@ -52,7 +52,7 @@ export default function LeadControls({
   }
 
   return (
-    <div className="rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
       <h2 className="text-lg font-semibold text-zinc-900">Работа с заявкой</h2>
 
       <label className="mt-4 block text-sm font-medium text-zinc-700">Статус</label>
@@ -87,7 +87,7 @@ export default function LeadControls({
         <button
           onClick={save}
           disabled={saving}
-          className="rounded-full bg-rose-500 px-6 py-2.5 font-medium text-white transition hover:bg-rose-600 disabled:opacity-60"
+          className="rounded-full bg-violet-500 px-6 py-2.5 font-medium text-white transition hover:bg-violet-600 disabled:opacity-60"
         >
           {saving ? "Сохраняем…" : "Сохранить"}
         </button>
@@ -97,7 +97,7 @@ export default function LeadControls({
       <div className="mt-4 border-t border-zinc-100 pt-4">
         <button
           onClick={() => setConfirmOpen(true)}
-          className="text-sm font-medium text-zinc-500 transition hover:text-rose-600"
+          className="text-sm font-medium text-zinc-500 transition hover:text-violet-600"
         >
           Удалить заявку
         </button>
@@ -125,7 +125,7 @@ export default function LeadControls({
               <button
                 onClick={confirmDelete}
                 disabled={deleting}
-                className="rounded-full bg-rose-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-rose-600 disabled:opacity-60"
+                className="rounded-full bg-violet-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-violet-600 disabled:opacity-60"
               >
                 {deleting ? "Удаляем…" : "Удалить"}
               </button>

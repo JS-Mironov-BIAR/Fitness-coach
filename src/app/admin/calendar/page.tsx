@@ -50,7 +50,7 @@ export default async function AdminCalendarPage() {
         </div>
 
         {error && (
-          <p className="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-rose-600">Ошибка загрузки: {error.message}</p>
+          <p className="mb-4 rounded-xl bg-violet-50 px-4 py-3 text-violet-600">Ошибка загрузки: {error.message}</p>
         )}
 
         <AdminCalendar initialSlots={slots} initialBookings={bookings} leads={leads} />

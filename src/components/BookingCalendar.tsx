@@ -14,6 +14,7 @@ import {
   ArrowRightIcon,
 } from "@/components/icons";
 import { CONTACT_METHODS, formatLabel, type Slot } from "@/lib/booking";
+import Turnstile from "@/components/Turnstile";
 
 const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
@@ -150,11 +151,11 @@ export default function BookingCalendar() {
   }
 
   return (
-    <div className="flex h-[38rem] flex-col rounded-3xl border border-rose-100 bg-white/80 p-5 shadow-xl shadow-rose-100/40 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:shadow-black/30">
+    <div className="flex h-[38rem] flex-col rounded-3xl border border-violet-100 bg-white/80 p-5 shadow-xl shadow-violet-100/40 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:shadow-black/30">
       {/* шапка */}
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-zinc-100 pb-4 dark:border-white/10">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-300">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-300">
             <CalendarIcon className="h-5 w-5" />
           </span>
           <div>
@@ -173,7 +174,7 @@ export default function BookingCalendar() {
               onClick={() => setView(v)}
               aria-label={label}
               className={`flex h-8 w-8 items-center justify-center rounded-full transition ${
-                view === v ? "bg-white text-rose-600 shadow dark:bg-zinc-800 dark:text-rose-300" : "text-zinc-500"
+                view === v ? "bg-white text-violet-600 shadow dark:bg-zinc-800 dark:text-violet-300" : "text-zinc-500"
               }`}
             >
               <Icon className="h-4 w-4" />
@@ -186,7 +187,7 @@ export default function BookingCalendar() {
         {loading ? (
           <div className="flex h-full items-center justify-center text-sm text-zinc-400">Загружаем расписание…</div>
         ) : loadError ? (
-          <div className="flex h-full items-center justify-center text-sm text-rose-500">
+          <div className="flex h-full items-center justify-center text-sm text-violet-500">
             Не удалось загрузить. Обнови страницу.
           </div>
         ) : (
@@ -243,8 +244,8 @@ export default function BookingCalendar() {
                     if (!inMonth) cls += "text-zinc-300 dark:text-zinc-700";
                     else if (selectable)
                       cls += isSelected
-                        ? "bg-rose-500 font-semibold text-white shadow-md shadow-rose-300/50"
-                        : "bg-rose-50 font-medium text-rose-700 ring-1 ring-rose-200 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-200 dark:ring-rose-500/30 dark:hover:bg-rose-500/20";
+                        ? "bg-violet-500 font-semibold text-white shadow-md shadow-violet-300/50"
+                        : "bg-violet-50 font-medium text-violet-700 ring-1 ring-violet-200 hover:bg-violet-100 dark:bg-violet-500/10 dark:text-violet-200 dark:ring-violet-500/30 dark:hover:bg-violet-500/20";
                     else if (inMonth && hasBusy && !isPast)
                       cls += "bg-zinc-100 text-zinc-400 dark:bg-white/5 dark:text-zinc-500";
                     else cls += "text-zinc-400 dark:text-zinc-600";
@@ -260,7 +261,7 @@ export default function BookingCalendar() {
                       >
                         {d.getDate()}
                         {inMonth && openCount > 0 && (
-                          <span className={`mt-0.5 h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white" : "bg-rose-500"}`} />
+                          <span className={`mt-0.5 h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white" : "bg-violet-500"}`} />
                         )}
                       </motion.button>
                     );
@@ -270,7 +271,7 @@ export default function BookingCalendar() {
                 {/* легенда */}
                 <div className="mt-2 flex shrink-0 items-center justify-center gap-4 text-xs text-zinc-500 dark:text-zinc-400">
                   <span className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full bg-rose-400" /> есть свободное
+                    <span className="h-2.5 w-2.5 rounded-full bg-violet-400" /> есть свободное
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="h-2.5 w-2.5 rounded bg-zinc-300 dark:bg-white/15" /> занято
@@ -278,7 +279,7 @@ export default function BookingCalendar() {
                 </div>
 
                 {/* времена выбранного дня */}
-                <div className="mt-2 flex-1 min-h-0 overflow-y-auto rounded-2xl border border-rose-100 bg-rose-50/40 p-3 dark:border-white/10 dark:bg-white/5">
+                <div className="mt-2 flex-1 min-h-0 overflow-y-auto rounded-2xl border border-violet-100 bg-violet-50/40 p-3 dark:border-white/10 dark:bg-white/5">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={selectedKey ?? "none"}
@@ -290,9 +291,9 @@ export default function BookingCalendar() {
                     >
                       {selectedSlots.length === 0 ? (
                         <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
-                          <ArrowRightIcon className="h-6 w-6 rotate-[-90deg] text-rose-300" />
+                          <ArrowRightIcon className="h-6 w-6 rotate-[-90deg] text-violet-300" />
                           <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                            Нажми на <span className="font-semibold text-rose-500">розовый день</span> в календаре
+                            Нажми на <span className="font-semibold text-violet-500">розовый день</span> в календаре
                           </p>
                         </div>
                       ) : (
@@ -326,7 +327,7 @@ export default function BookingCalendar() {
                 {groups.length === 0 ? (
                   <p className="py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
                     Свободных слотов пока нет. Заполни{" "}
-                    <a href="/anketa" className="font-medium text-rose-500 hover:underline">
+                    <a href="/anketa" className="font-medium text-violet-500 hover:underline">
                       анкету
                     </a>
                     .
@@ -376,7 +377,7 @@ function TimeChip({ slot, onPick }: { slot: Slot; onPick: () => void }) {
       whileTap={open ? { scale: 0.94 } : undefined}
       className={
         open
-          ? "flex items-center gap-1.5 rounded-xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+          ? "flex items-center gap-1.5 rounded-xl bg-violet-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-600"
           : "flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-zinc-100 px-4 py-2.5 text-sm font-medium text-zinc-400 line-through dark:border-white/10 dark:bg-white/5 dark:text-zinc-500"
       }
     >
@@ -400,6 +401,8 @@ function BookingModal({
   const [method, setMethod] = useState<string>(CONTACT_METHODS[0]);
   const [value, setValue] = useState("");
   const [comment, setComment] = useState("");
+  const [hp, setHp] = useState("");
+  const [token, setToken] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [err, setErr] = useState("");
 
@@ -411,7 +414,7 @@ function BookingModal({
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slot_id: slot.id, name, contact_method: method, contact_value: value, comment }),
+        body: JSON.stringify({ slot_id: slot.id, name, contact_method: method, contact_value: value, comment, hp, turnstile_token: token }),
       });
       if (!res.ok) {
         const d = (await res.json().catch(() => ({}))) as { error?: string };
@@ -434,7 +437,7 @@ function BookingModal({
   });
 
   const inputClass =
-    "w-full rounded-xl border border-rose-200 bg-rose-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200 dark:border-white/10 dark:bg-white/5 dark:text-zinc-100 dark:placeholder-zinc-500";
+    "w-full rounded-xl border border-violet-200 bg-violet-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-violet-400 focus:bg-white focus:ring-2 focus:ring-violet-200 dark:border-white/10 dark:bg-white/5 dark:text-zinc-100 dark:placeholder-zinc-500";
 
   return (
     <motion.div
@@ -458,7 +461,7 @@ function BookingModal({
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300">
               <CheckIcon className="h-7 w-7" />
             </span>
-            <h3 className="mt-4 text-xl font-semibold text-zinc-900 dark:text-zinc-50">Ты записана!</h3>
+            <h3 className="mt-4 text-xl font-semibold text-zinc-900 dark:text-zinc-50">Запись принята!</h3>
             <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Скоро свяжусь для подтверждения 💜</p>
           </div>
         ) : (
@@ -466,7 +469,7 @@ function BookingModal({
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Запись на занятие</h3>
-                <p className="mt-1 text-sm capitalize text-rose-600 dark:text-rose-300">{when}</p>
+                <p className="mt-1 text-sm capitalize text-violet-600 dark:text-violet-300">{when}</p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">{formatLabel(slot.format)}</p>
               </div>
               <button
@@ -480,6 +483,16 @@ function BookingModal({
             </div>
 
             <form onSubmit={submit} className="mt-5 space-y-3">
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                value={hp}
+                onChange={(e) => setHp(e.target.value)}
+                className="absolute left-[-9999px] h-0 w-0 opacity-0"
+              />
               <input className={inputClass} placeholder="Имя *" value={name} required onChange={(e) => setName(e.target.value)} />
               <div className="flex gap-2">
                 <select className={`${inputClass} max-w-[10rem]`} value={method} onChange={(e) => setMethod(e.target.value)}>
@@ -504,11 +517,12 @@ function BookingModal({
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />
-              {status === "error" && <p className="text-sm text-rose-500">{err}</p>}
+              {status === "error" && <p className="text-sm text-violet-500">{err}</p>}
+              <Turnstile onToken={setToken} />
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="w-full rounded-full bg-rose-500 px-6 py-3 font-medium text-white transition hover:bg-rose-600 disabled:opacity-60"
+                className="w-full rounded-full bg-violet-500 px-6 py-3 font-medium text-white transition hover:bg-violet-600 disabled:opacity-60"
               >
                 {status === "sending" ? "Записываем…" : "Записаться"}
               </button>

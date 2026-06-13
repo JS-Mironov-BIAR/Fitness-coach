@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { pdf, usePDF } from "@react-pdf/renderer";
-import { ProgramDocument, type ProgramData } from "@/components/pdf/ProgramDocument";
+import { ProgramDocument, PDF_THEMES, type ProgramData } from "@/components/pdf/ProgramDocument";
 import { ANKETA_GROUPS } from "@/lib/anketa";
 import { PlusIcon, TrashIcon, CheckIcon } from "@/components/icons";
 
@@ -12,7 +12,7 @@ type LeadFull = Record<string, unknown> & { id: string };
 const uid = () => crypto.randomUUID();
 
 const inputCls =
-  "w-full rounded-xl border border-rose-200 bg-rose-50/40 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none focus:border-rose-400 focus:bg-white focus:ring-2 focus:ring-rose-200";
+  "w-full rounded-xl border border-violet-200 bg-violet-50/40 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none focus:border-violet-400 focus:bg-white focus:ring-2 focus:ring-violet-200";
 
 function todayLabel() {
   return new Date().toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
@@ -26,7 +26,9 @@ function emptyData(): ProgramData {
     dateLabel: todayLabel(),
     intro: "",
     blocks: [{ id: uid(), title: "День 1", rows: [{ id: uid(), main: "", secondary: "", note: "" }] }],
-    footer: "Составлено индивидуально • Аня · FitnessCoach",
+    footer: "Составлено индивидуально • Аня · halvafit",
+    themeKey: "violet",
+    contacts: "",
   };
 }
 
@@ -61,9 +63,9 @@ function nutritionTemplate() {
   ];
 }
 
-export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
+export default function PdfStudio({ leads, contacts }: { leads: LeadFull[]; contacts: string }) {
   const router = useRouter();
-  const [data, setData] = useState<ProgramData>(emptyData);
+  const [data, setData] = useState<ProgramData>(() => ({ ...emptyData(), contacts }));
   const [previewData, setPreviewData] = useState<ProgramData>(data);
   const [leadId, setLeadId] = useState("");
   const [showRef, setShowRef] = useState(false);
@@ -193,7 +195,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
       {/* Редактор */}
       <div className="space-y-4">
         {/* Клиент и тип */}
-        <div className="rounded-2xl border border-rose-100 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
           <label className="block text-sm font-medium text-zinc-700">
             Клиент из заявок
             <select
@@ -218,7 +220,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
             <button
               type="button"
               onClick={() => setShowRef((v) => !v)}
-              className="mt-2 text-sm font-medium text-rose-600 hover:underline"
+              className="mt-2 text-sm font-medium text-violet-600 hover:underline"
             >
               {showRef ? "Скрыть анкету клиента" : "Показать анкету клиента"}
             </button>
@@ -233,7 +235,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
                 if (filled.length === 0) return null;
                 return (
                   <div key={g.title} className="mb-2">
-                    <p className="font-semibold text-rose-700">{g.title}</p>
+                    <p className="font-semibold text-violet-700">{g.title}</p>
                     {filled.map((f) => (
                       <p key={f.name} className="text-zinc-700">
                         <span className="text-zinc-400">{f.label}:</span> {String(selectedLead[f.name])}
@@ -252,7 +254,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
                 type="button"
                 onClick={() => setType(t)}
                 className={`flex-1 rounded-xl px-4 py-2 text-sm font-medium transition ${
-                  data.type === t ? "bg-rose-500 text-white" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  data.type === t ? "bg-violet-500 text-white" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
                 }`}
               >
                 {t === "training" ? "Тренировки" : "Питание"}
@@ -262,7 +264,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
         </div>
 
         {/* Шапка документа */}
-        <div className="space-y-3 rounded-2xl border border-rose-100 bg-white p-5 shadow-sm">
+        <div className="space-y-3 rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
           <label className="block text-sm font-medium text-zinc-700">
             Заголовок
             <input value={data.title} onChange={(e) => patch({ title: e.target.value })} className={`mt-1.5 ${inputCls}`} />
@@ -287,12 +289,30 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
               className={`mt-1.5 ${inputCls}`}
             />
           </label>
+          <div>
+            <span className="text-sm font-medium text-zinc-700">Тема оформления</span>
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              {PDF_THEMES.map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => patch({ themeKey: t.key })}
+                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition ${
+                    data.themeKey === t.key ? "border-violet-400 text-zinc-900 ring-1 ring-violet-300" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                  }`}
+                >
+                  <span className="h-3.5 w-3.5 rounded-full" style={{ backgroundColor: t.accent }} />
+                  {t.name}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Блоки */}
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-zinc-900">Содержание</h3>
-          <button onClick={loadTemplate} type="button" className="text-sm font-medium text-rose-600 hover:underline">
+          <button onClick={loadTemplate} type="button" className="text-sm font-medium text-violet-600 hover:underline">
             Вставить шаблон
           </button>
         </div>
@@ -310,7 +330,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
                 onClick={() => removeBlock(block.id)}
                 type="button"
                 title="Удалить блок"
-                className="rounded-lg p-2 text-zinc-400 transition hover:bg-rose-50 hover:text-rose-600"
+                className="rounded-lg p-2 text-zinc-400 transition hover:bg-violet-50 hover:text-violet-600"
               >
                 <TrashIcon className="h-4 w-4" />
               </button>
@@ -336,7 +356,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
                       onClick={() => removeRow(block.id, r.id)}
                       type="button"
                       title="Удалить строку"
-                      className="rounded-lg p-2 text-zinc-400 transition hover:bg-rose-50 hover:text-rose-600"
+                      className="rounded-lg p-2 text-zinc-400 transition hover:bg-violet-50 hover:text-violet-600"
                     >
                       <TrashIcon className="h-4 w-4" />
                     </button>
@@ -352,7 +372,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
               <button
                 onClick={() => addRow(block.id)}
                 type="button"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-600 hover:underline"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-violet-600 hover:underline"
               >
                 <PlusIcon className="h-4 w-4" /> Добавить строку
               </button>
@@ -363,7 +383,7 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
         <button
           onClick={addBlock}
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-full border border-rose-300 px-5 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50"
+          className="inline-flex items-center gap-1.5 rounded-full border border-violet-300 px-5 py-2.5 text-sm font-medium text-violet-600 transition hover:bg-violet-50"
         >
           <PlusIcon className="h-4 w-4" /> Добавить блок
         </button>
@@ -380,20 +400,20 @@ export default function PdfStudio({ leads }: { leads: LeadFull[] }) {
           <button
             onClick={handleDownload}
             disabled={busy}
-            className="rounded-full bg-rose-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-rose-600 disabled:opacity-60"
+            className="rounded-full bg-violet-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-violet-600 disabled:opacity-60"
           >
             {busy ? "…" : "Скачать PDF"}
           </button>
           <button
             onClick={handleSend}
             disabled={busy}
-            className="inline-flex items-center gap-1.5 rounded-full border border-rose-300 px-5 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-full border border-violet-300 px-5 py-2.5 text-sm font-medium text-violet-600 transition hover:bg-violet-50 disabled:opacity-60"
           >
             <CheckIcon className="h-4 w-4" /> Отправить в Telegram
           </button>
         </div>
         {(msg || err) && (
-          <p className={`mb-3 rounded-xl px-4 py-2.5 text-sm ${err ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-700"}`}>
+          <p className={`mb-3 rounded-xl px-4 py-2.5 text-sm ${err ? "bg-violet-50 text-violet-600" : "bg-emerald-50 text-emerald-700"}`}>
             {err || msg}
           </p>
         )}

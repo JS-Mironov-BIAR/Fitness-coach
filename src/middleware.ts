@@ -1,10 +1,23 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ADMIN_COOKIE, adminSessionToken } from "@/lib/adminAuth";
 
+// Известные инструменты взлома/сканеры — блокируем на любых API
+const BAD_BOT =
+  /sqlmap|nikto|nmap|masscan|nuclei|wpscan|acunetix|zgrab|fimap|dirbuster|gobuster|hydra|metasploit|libwww-perl|python-requests|go-http-client|scrapy|httraq|netsparker/i;
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const ua = req.headers.get("user-agent") || "";
 
-  // Логин-эндпоинты доступны без авторизации
+  // 1) Блокировка атак-инструментов на API
+  if (pathname.startsWith("/api/") && BAD_BOT.test(ua)) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
+
+  // 2) Авторизация админки
+  const isAdmin = pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
+  if (!isAdmin) return NextResponse.next();
+
   if (pathname === "/admin/login" || pathname === "/api/admin/login") {
     return NextResponse.next();
   }
@@ -19,7 +32,6 @@ export async function middleware(req: NextRequest) {
 
   if (valid) return NextResponse.next();
 
-  // API → 401, страницы → редирект на логин
   if (pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
@@ -29,5 +41,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/:path*"],
 };

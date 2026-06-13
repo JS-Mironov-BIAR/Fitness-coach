@@ -4,6 +4,7 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { ANKETA_GROUPS } from "@/lib/anketa";
 import { statusMeta } from "@/lib/leads";
 import LeadControls from "./LeadControls";
+import ClientPromptBuilder from "./ClientPromptBuilder";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-8 font-sans">
       <div className="mx-auto max-w-3xl">
-        <Link href="/admin" className="text-sm text-rose-600 hover:underline">
+        <Link href="/admin" className="text-sm text-violet-600 hover:underline">
           ← Ко всем заявкам
         </Link>
 
@@ -45,6 +46,10 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
           />
         </div>
 
+        <div className="mt-6">
+          <ClientPromptBuilder lead={row} />
+        </div>
+
         <div className="mt-6 space-y-4">
           {ANKETA_GROUPS.map((group) => {
             const filled = group.fields.filter((f) => {
@@ -54,7 +59,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             if (filled.length === 0) return null;
             return (
               <section key={group.title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-                <h2 className="text-base font-semibold text-rose-700">
+                <h2 className="text-base font-semibold text-violet-700">
                   {group.emoji} {group.title}
                 </h2>
                 <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">

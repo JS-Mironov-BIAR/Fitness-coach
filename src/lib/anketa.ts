@@ -105,7 +105,7 @@ export const ANKETA_GROUPS: AnketaGroup[] = [
       { name: "current_program", label: "Тренируешься сейчас? Опиши программу", type: "textarea", full: true },
       {
         name: "tried",
-        label: "Что уже пробовала?",
+        label: "Что уже пробовал(а)?",
         type: "textarea",
         full: true,
         placeholder: "например: дефицит калорий, голодания, тренировки на улице, занятия с тренером…",

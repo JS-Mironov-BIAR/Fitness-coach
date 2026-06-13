@@ -1,23 +1,60 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 import { ChevronLeftIcon } from "@/components/icons";
 
-export default function SiteHeader({ back = false }: { back?: boolean }) {
+export default function SiteHeader({ back = false, anketaLink = false }: { back?: boolean; anketaLink?: boolean }) {
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      setHidden(y > last && y > 90);
+      last = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5">
-      {back ? (
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-zinc-700 transition hover:text-rose-600 dark:text-zinc-300 dark:hover:text-rose-300"
-        >
-          <ChevronLeftIcon className="h-5 w-5" /> Назад
-        </Link>
-      ) : (
-        <span className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Fitness<span className="text-rose-500">Coach</span>
-        </span>
-      )}
-      <ThemeToggle />
+    <header
+      className={`sticky top-0 z-40 transition-transform duration-300 ${hidden ? "-translate-y-full" : "translate-y-0"} ${
+        scrolled
+          ? "border-b border-zinc-200/60 bg-white/80 backdrop-blur dark:border-white/10 dark:bg-zinc-950/70"
+          : "border-b border-transparent"
+      }`}
+    >
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
+        {back ? (
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-zinc-700 transition hover:text-violet-600 dark:text-zinc-300 dark:hover:text-violet-300"
+          >
+            <ChevronLeftIcon className="h-5 w-5" /> Назад
+          </Link>
+        ) : (
+          <Link href="/" aria-label="halvafit">
+            <Logo />
+          </Link>
+        )}
+        <div className="flex items-center gap-3">
+          {anketaLink && !back && (
+            <Link
+              href="/anketa"
+              className="hidden rounded-full px-4 py-2 text-sm font-medium text-zinc-700 transition hover:text-violet-600 sm:inline dark:text-zinc-300 dark:hover:text-violet-300"
+            >
+              Анкета
+            </Link>
+          )}
+          <ThemeToggle />
+        </div>
+      </div>
     </header>
   );
 }

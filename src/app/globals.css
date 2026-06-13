@@ -25,3 +25,87 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Бренд halvafit — фиолетово-сиреневая палитра в духе Instagram */
+.brand-gradient {
+  background-image: linear-gradient(135deg, #c084fc 0%, #a855f7 45%, #7c3aed 100%);
+}
+.brand-gradient-text {
+  background-image: linear-gradient(135deg, #c084fc 0%, #a855f7 45%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ===== Темы оформления (перекрашивают всю палитру violet-*) ===== */
+
+/* Инстаграм (розово-фиолетовый) */
+:root[data-theme="insta"] {
+  --color-violet-50: #fdf4ff;
+  --color-violet-100: #fae8ff;
+  --color-violet-200: #f5d0fe;
+  --color-violet-300: #f0abfc;
+  --color-violet-400: #e879f9;
+  --color-violet-500: #d6249f;
+  --color-violet-600: #c026d3;
+  --color-violet-700: #a21caf;
+  --color-violet-800: #86198f;
+  --color-violet-900: #701a75;
+  --color-violet-950: #4a044e;
+}
+:root[data-theme="insta"] .brand-gradient {
+  background-image: linear-gradient(135deg, #feda75 0%, #fa7e1e 25%, #d62976 55%, #962fbf 80%, #4f5bd5 100%);
+}
+:root[data-theme="insta"] .brand-gradient-text {
+  background-image: linear-gradient(135deg, #fa7e1e 0%, #d62976 50%, #962fbf 100%);
+}
+
+/* Изумруд */
+:root[data-theme="emerald"] {
+  --color-violet-50: #ecfdf5;
+  --color-violet-100: #d1fae5;
+  --color-violet-200: #a7f3d0;
+  --color-violet-300: #6ee7b7;
+  --color-violet-400: #34d399;
+  --color-violet-500: #10b981;
+  --color-violet-600: #059669;
+  --color-violet-700: #047857;
+  --color-violet-800: #065f46;
+  --color-violet-900: #064e3b;
+  --color-violet-950: #022c22;
+}
+:root[data-theme="emerald"] .brand-gradient {
+  background-image: linear-gradient(135deg, #34d399 0%, #10b981 50%, #0f766e 100%);
+}
+:root[data-theme="emerald"] .brand-gradient-text {
+  background-image: linear-gradient(135deg, #34d399 0%, #10b981 50%, #0f766e 100%);
+}
+
+/* Океан */
+:root[data-theme="ocean"] {
+  --color-violet-50: #f0f9ff;
+  --color-violet-100: #e0f2fe;
+  --color-violet-200: #bae6fd;
+  --color-violet-300: #7dd3fc;
+  --color-violet-400: #38bdf8;
+  --color-violet-500: #0ea5e9;
+  --color-violet-600: #0284c7;
+  --color-violet-700: #0369a1;
+  --color-violet-800: #075985;
+  --color-violet-900: #0c4a6e;
+  --color-violet-950: #082f49;
+}
+:root[data-theme="ocean"] .brand-gradient {
+  background-image: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 50%, #4f46e5 100%);
+}
+:root[data-theme="ocean"] .brand-gradient-text {
+  background-image: linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%);
+}

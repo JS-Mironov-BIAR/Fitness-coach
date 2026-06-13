@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AnketaForm from "./AnketaForm";
 import SiteHeader from "@/components/SiteHeader";
+import ScrollTopButton from "@/components/ScrollTopButton";
 
 export const metadata: Metadata = {
   title: "Анкета — подбор программы",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AnketaPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-rose-50 to-white font-sans dark:from-zinc-950 dark:to-black">
+    <main className="min-h-screen bg-gradient-to-b from-violet-50 to-white font-sans dark:from-zinc-950 dark:to-black">
       <SiteHeader back />
       <div className="mx-auto max-w-2xl px-4 pb-12">
         <header className="mb-8 text-center">
@@ -23,6 +24,7 @@ export default function AnketaPage() {
         </header>
         <AnketaForm />
       </div>
+      <ScrollTopButton />
     </main>
   );
 }

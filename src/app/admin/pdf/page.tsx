@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { getSiteSettings } from "@/lib/settings";
 import AdminNav from "@/components/AdminNav";
 import LogoutButton from "@/app/admin/LogoutButton";
 import PdfStudioClient from "./PdfStudioClient";
@@ -35,6 +36,15 @@ export default async function AdminPdfPage() {
     .limit(20);
   const programs = (programData ?? []) as unknown as ProgramRow[];
 
+  const settings = await getSiteSettings();
+  const contacts = [
+    settings.instagram_url ? `Instagram: ${settings.instagram_url}` : null,
+    settings.telegram_url ? `Telegram: ${settings.telegram_url}` : null,
+    settings.phone || null,
+  ]
+    .filter(Boolean)
+    .join("    ·    ");
+
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-8 font-sans">
       <div className="mx-auto max-w-6xl">
@@ -48,7 +58,7 @@ export default async function AdminPdfPage() {
           хранятся, фиксируется только факт генерации.
         </p>
 
-        <PdfStudioClient leads={leads} />
+        <PdfStudioClient leads={leads} contacts={contacts} />
 
         {/* История генераций */}
         <div className="mt-10">

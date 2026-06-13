@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendTelegramMessage } from "@/lib/telegram";
 import { formatLabel } from "@/lib/booking";
+import { getClientIp, isBlocked, verifyTurnstile } from "@/lib/security";
 
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
@@ -9,6 +10,11 @@ export async function POST(req: Request) {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Некорректные данные" }, { status: 400 });
+  }
+
+  // Ханипот
+  if (String(body.hp ?? "").trim() !== "") {
+    return NextResponse.json({ ok: true });
   }
 
   const slotId = String(body.slot_id ?? "");
@@ -22,6 +28,30 @@ export async function POST(req: Request) {
   }
 
   const sb = supabaseAdmin();
+  const ip = getClientIp(req);
+
+  // Капча Cloudflare Turnstile (если включена)
+  if (!(await verifyTurnstile(String(body.turnstile_token ?? ""), ip))) {
+    return NextResponse.json({ error: "Подтверди, что ты не робот, и попробуй снова" }, { status: 400 });
+  }
+
+  // Чёрный список — тихо игнорируем
+  if (await isBlocked(sb, contactValue, ip)) {
+    return NextResponse.json({ ok: true });
+  }
+
+  // Лимит по IP: не больше 8 записей в час
+  if (ip) {
+    const since1h = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count } = await sb
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .eq("ip", ip)
+      .gte("created_at", since1h);
+    if ((count ?? 0) >= 8) {
+      return NextResponse.json({ error: "Слишком много записей. Попробуй позже." }, { status: 429 });
+    }
+  }
 
   const { data: slot, error: slotErr } = await sb
     .from("slots")
@@ -36,7 +66,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Это время уже занято" }, { status: 409 });
   }
 
-  // Помечаем занятым атомарно: апдейт только если ещё open (защита от гонки)
   const { data: locked, error: lockErr } = await sb
     .from("slots")
     .update({ status: "booked" })
@@ -56,10 +85,10 @@ export async function POST(req: Request) {
     contact_value: contactValue,
     format: slot.format,
     comment,
+    ip,
   });
 
   if (insErr) {
-    // откатываем слот обратно в open
     await sb.from("slots").update({ status: "open" }).eq("id", slotId);
     console.error("Ошибка записи брони:", insErr);
     return NextResponse.json({ error: "Не удалось записать, попробуй ещё раз" }, { status: 500 });
