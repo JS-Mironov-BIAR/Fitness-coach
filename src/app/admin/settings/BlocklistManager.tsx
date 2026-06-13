@@ -49,20 +49,20 @@ export default function BlocklistManager({ initial }: { initial: BlockEntry[] })
   }
 
   return (
-    <section className="max-w-2xl rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
+    <section className="max-w-2xl rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
       <h2 className="text-lg font-semibold text-zinc-900">Блокировки</h2>
       <p className="mt-1 text-sm text-zinc-500">
         Контакт (@ник, телефон, e-mail) или IP — их анкеты и записи будут молча игнорироваться.
       </p>
 
-      <form onSubmit={add} className="mt-4 flex flex-wrap gap-2">
-        <select value={kind} onChange={(e) => setKind(e.target.value)} className={`${inputCls} max-w-[8rem]`}>
+      <form onSubmit={add} className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <select value={kind} onChange={(e) => setKind(e.target.value)} className={`${inputCls} sm:max-w-[8rem]`}>
           <option value="contact">Контакт</option>
           <option value="ip">IP</option>
         </select>
-        <input value={value} onChange={(e) => setValue(e.target.value)} required placeholder="@spammer / 1.2.3.4" className={`${inputCls} flex-1`} />
-        <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Заметка" className={`${inputCls} flex-1`} />
-        <button type="submit" disabled={busy} className="rounded-full bg-violet-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-violet-600 disabled:opacity-60">
+        <input value={value} onChange={(e) => setValue(e.target.value)} required placeholder="@spammer / 1.2.3.4" className={`${inputCls} sm:flex-1`} />
+        <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Заметка" className={`${inputCls} sm:flex-1`} />
+        <button type="submit" disabled={busy} className="w-full rounded-full bg-violet-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-violet-600 disabled:opacity-60 sm:w-auto">
           Добавить
         </button>
       </form>

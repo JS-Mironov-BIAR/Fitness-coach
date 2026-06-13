@@ -191,7 +191,7 @@ export default function PdfStudio({ leads, contacts }: { leads: LeadFull[]; cont
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       {/* Редактор */}
       <div className="space-y-4">
         {/* Клиент и тип */}

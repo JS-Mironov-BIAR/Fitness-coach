@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendTelegramMessage } from "@/lib/telegram";
-import { formatLabel } from "@/lib/booking";
+import { formatLabel, TZ } from "@/lib/booking";
 import { getClientIp, isBlocked, verifyTurnstile } from "@/lib/security";
 
 export async function POST(req: Request) {
@@ -101,6 +101,7 @@ export async function POST(req: Request) {
       month: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: TZ,
     });
     const contact = [contactMethod, contactValue].filter(Boolean).join(": ");
     await sendTelegramMessage(

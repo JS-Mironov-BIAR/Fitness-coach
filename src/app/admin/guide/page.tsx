@@ -126,9 +126,9 @@ const FAQ: { q: string; a: string }[] = [
 
 export default function AdminGuidePage() {
   return (
-    <main className="min-h-screen bg-zinc-50 px-4 py-8 font-sans">
+    <main className="min-h-screen bg-zinc-50 px-4 py-6 font-sans">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-6 flex items-center justify-between gap-3">
+        <div className="mb-5 flex items-center justify-between gap-3">
           <AdminNav />
           <LogoutButton />
         </div>
@@ -155,7 +155,7 @@ export default function AdminGuidePage() {
         </div>
 
         {/* FAQ */}
-        <h2 className="mb-3 mt-10 text-xl font-bold text-zinc-900">Частые вопросы</h2>
+        <h2 className="mb-3 mt-8 text-xl font-bold text-zinc-900">Частые вопросы</h2>
         <div className="space-y-2">
           {FAQ.map((f) => (
             <details key={f.q} className="group rounded-xl border border-zinc-200 bg-white px-4 py-3 shadow-sm">

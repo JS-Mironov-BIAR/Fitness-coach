@@ -46,14 +46,14 @@ export default async function AdminPdfPage() {
     .join("    ·    ");
 
   return (
-    <main className="min-h-screen bg-zinc-50 px-4 py-8 font-sans">
+    <main className="min-h-screen bg-zinc-50 px-4 py-6 font-sans">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center justify-between gap-3">
+        <div className="mb-5 flex items-center justify-between gap-3">
           <AdminNav />
           <LogoutButton />
         </div>
         <h1 className="mb-1 text-2xl font-bold text-zinc-900">Конструктор PDF</h1>
-        <p className="mb-6 text-sm text-zinc-500">
+        <p className="mb-5 text-sm text-zinc-500">
           Выбери клиента, собери программу из блоков — справа живое превью. Скачай или отправь в Telegram. Файлы не
           хранятся, фиксируется только факт генерации.
         </p>
@@ -61,10 +61,10 @@ export default async function AdminPdfPage() {
         <PdfStudioClient leads={leads} contacts={contacts} />
 
         {/* История генераций */}
-        <div className="mt-10">
+        <div className="mt-8">
           <h2 className="mb-3 text-lg font-semibold text-zinc-900">История генераций</h2>
           {programs.length === 0 ? (
-            <p className="rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-8 text-center text-zinc-500">
+            <p className="rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-6 text-center text-zinc-500">
               Пока ничего не генерировалось.
             </p>
           ) : (

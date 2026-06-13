@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { SLOT_FORMATS, CONTACT_METHODS, formatLabel, type Slot } from "@/lib/booking";
+import { SLOT_FORMATS, CONTACT_METHODS, formatLabel, TZ, type Slot } from "@/lib/booking";
 import {
   PlusIcon,
   TrashIcon,
@@ -45,14 +45,19 @@ const inputCls =
   "mt-1.5 w-full rounded-xl border border-violet-200 bg-violet-50/40 px-4 py-2.5 text-zinc-900 placeholder-zinc-400 outline-none focus:border-violet-400 focus:bg-white focus:ring-2 focus:ring-violet-200";
 
 function dayDate(iso: string) {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  // YYYY-MM-DD по календарю Беларуси (независимо от пояса устройства)
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(iso));
 }
 function dayTitle(iso: string) {
-  return new Date(iso).toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long" });
+  return new Date(iso).toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long", timeZone: TZ });
 }
 function timeLabel(iso: string) {
-  return new Date(iso).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  return new Date(iso).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit", timeZone: TZ });
 }
 
 function Section({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -497,7 +502,7 @@ export default function AdminCalendar({
 
       {confirmClear && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => !busy && setConfirmClear(false)}>
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-sm rounded-2xl bg-white p-5 text-center shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-semibold text-zinc-900">Очистить расписание?</h3>
             <p className="mt-2 text-sm text-zinc-500">Удалятся все будущие окна (и свободные, и записи). Это необратимо.</p>
             <div className="mt-5 flex justify-center gap-3">
@@ -555,6 +560,7 @@ function AssignModal({
     month: "long",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: TZ,
   });
 
   const modalInput =
@@ -568,7 +574,7 @@ function AssignModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 text-zinc-900 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-md rounded-2xl bg-white p-5 text-zinc-900 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-lg font-semibold text-zinc-900">Закрепить за человеком</h3>

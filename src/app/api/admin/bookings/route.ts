@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { parseTimesList } from "@/lib/booking";
+import { parseTimesList, localToUtcISO } from "@/lib/booking";
 
 const MAX = 600;
 
@@ -29,16 +29,14 @@ export async function POST(req: Request) {
     const to = new Date(`${toStr}T00:00:00`);
     if (from > to) return NextResponse.json({ error: "Дата начала позже конца" }, { status: 400 });
 
-    const now = new Date();
+    const nowMs = Date.now();
     const wanted: string[] = [];
     for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
       if (!weekdays.includes(d.getDay())) continue;
+      const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
       for (const t of times) {
-        const [h, m] = t.split(":").map(Number);
-        const dt = new Date(d);
-        dt.setHours(h, m, 0, 0);
-        if (dt < now) continue;
-        wanted.push(dt.toISOString());
+        const iso = localToUtcISO(ds, t);
+        if (new Date(iso).getTime() >= nowMs) wanted.push(iso);
       }
       if (wanted.length > MAX) break;
     }
@@ -53,8 +51,8 @@ export async function POST(req: Request) {
     const { data: existing } = await sb
       .from("slots")
       .select("id, starts_at, status")
-      .gte("starts_at", from.toISOString())
-      .lte("starts_at", new Date(to.getTime() + 24 * 60 * 60 * 1000).toISOString());
+      .gte("starts_at", new Date(from.getTime() - 24 * 60 * 60 * 1000).toISOString())
+      .lte("starts_at", new Date(to.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString());
     const exMap = new Map<string, { id: string; status: string }>();
     for (const e of existing ?? []) exMap.set(new Date(e.starts_at).toISOString(), { id: e.id, status: e.status });
 

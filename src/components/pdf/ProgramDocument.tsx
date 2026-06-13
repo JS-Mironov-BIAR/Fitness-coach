@@ -64,6 +64,38 @@ function makeStyles(accent: string, soft: string) {
   });
 }
 
+function PdfLogo({ accent, onColor = false }: { accent: string; onColor?: boolean }) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+      <View
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: 6,
+          backgroundColor: onColor ? "#ffffff" : accent,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{ fontFamily: "Roboto", fontSize: 13, fontWeight: "bold", color: onColor ? accent : "#ffffff" }}>
+          h
+        </Text>
+      </View>
+      <Text
+        style={{
+          marginLeft: 6,
+          fontFamily: "Roboto",
+          fontSize: 15,
+          fontWeight: "bold",
+          color: onColor ? "#ffffff" : INK,
+        }}
+      >
+        halva<Text style={{ color: onColor ? "#ffffff" : accent }}>fit</Text>
+      </Text>
+    </View>
+  );
+}
+
 export function ProgramDocument({ data }: { data: ProgramData }) {
   const theme = PDF_THEMES.find((t) => t.key === data.themeKey) ?? PDF_THEMES[0];
   const styles = makeStyles(theme.accent, theme.soft);
@@ -75,15 +107,13 @@ export function ProgramDocument({ data }: { data: ProgramData }) {
       <Page size="A4" style={styles.page}>
         {theme.layout === "band" ? (
           <View style={styles.headerBand} fixed>
-            <Text style={styles.brand}>halvafit</Text>
+            <PdfLogo accent={theme.accent} onColor />
             <Text style={styles.title}>{data.title || kind}</Text>
             <Text style={styles.headerMeta}>{meta}</Text>
           </View>
         ) : (
           <View style={styles.headerMinimal} fixed>
-            <Text style={styles.brandDark}>
-              halva<Text style={{ color: theme.accent }}>fit</Text>
-            </Text>
+            <PdfLogo accent={theme.accent} />
             <Text style={styles.titleDark}>{data.title || kind}</Text>
             <Text style={styles.headerMetaDark}>{meta}</Text>
           </View>

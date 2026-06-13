@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { parseTimesList, buildTimeRange } from "@/lib/booking";
+import { parseTimesList, buildTimeRange, localToUtcISO } from "@/lib/booking";
 
 const FORMATS = new Set(["offline", "online"]);
 const MAX_INSERT = 1000;
@@ -28,8 +28,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Нет выбранных дней" }, { status: 400 });
     }
     for (const date of dates) {
-      const start = new Date(`${date}T00:00:00`).toISOString();
-      const end = new Date(`${date}T23:59:59`).toISOString();
+      const start = localToUtcISO(date, "00:00");
+      const end = localToUtcISO(date, "23:59");
       if (action === "delete") {
         await sb.from("slots").delete().gte("starts_at", start).lte("starts_at", end);
       } else if (action === "block") {
@@ -47,16 +47,16 @@ export async function POST(req: Request) {
     const blocked = Boolean(body.blocked);
     if (!date) return NextResponse.json({ error: "Не задана дата" }, { status: 400 });
 
-    const start = new Date(`${date}T00:00:00`);
-    const end = new Date(`${date}T23:59:59`);
+    const start = localToUtcISO(date, "00:00");
+    const end = localToUtcISO(date, "23:59");
     const from = blocked ? "open" : "blocked";
     const to = blocked ? "blocked" : "open";
 
     const { error } = await sb
       .from("slots")
       .update({ status: to })
-      .gte("starts_at", start.toISOString())
-      .lte("starts_at", end.toISOString())
+      .gte("starts_at", start)
+      .lte("starts_at", end)
       .eq("status", from);
 
     if (error) {
@@ -90,16 +90,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Дата начала позже даты конца" }, { status: 400 });
     }
 
-    const now = new Date();
+    const nowMs = Date.now();
     const wanted: string[] = [];
     for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
       if (!weekdays.includes(d.getDay())) continue;
+      const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
       for (const t of times) {
-        const [h, m] = t.split(":").map(Number);
-        const dt = new Date(d);
-        dt.setHours(h, m, 0, 0);
-        if (dt < now) continue;
-        wanted.push(dt.toISOString());
+        const iso = localToUtcISO(ds, t);
+        if (new Date(iso).getTime() >= nowMs) wanted.push(iso);
       }
       if (wanted.length > MAX_INSERT) break;
     }
@@ -118,8 +116,8 @@ export async function POST(req: Request) {
     const { data: existing } = await sb
       .from("slots")
       .select("starts_at")
-      .gte("starts_at", from.toISOString())
-      .lte("starts_at", new Date(to.getTime() + 24 * 60 * 60 * 1000).toISOString());
+      .gte("starts_at", new Date(from.getTime() - 24 * 60 * 60 * 1000).toISOString())
+      .lte("starts_at", new Date(to.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString());
     const existingSet = new Set((existing ?? []).map((e) => new Date(e.starts_at).toISOString()));
 
     const rows = wanted
@@ -154,7 +152,7 @@ export async function POST(req: Request) {
   }
 
   const rows = cleanTimes.map((t) => ({
-    starts_at: new Date(`${date}T${t}:00`).toISOString(),
+    starts_at: localToUtcISO(date, t),
     duration_min: Number.isFinite(duration) && duration > 0 ? duration : 60,
     format,
     status: "open",

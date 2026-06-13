@@ -13,8 +13,9 @@ import {
   ListIcon,
   ArrowRightIcon,
 } from "@/components/icons";
-import { CONTACT_METHODS, formatLabel, type Slot } from "@/lib/booking";
+import { CONTACT_METHODS, formatLabel, TZ, type Slot } from "@/lib/booking";
 import Turnstile from "@/components/Turnstile";
+import Select from "@/components/ui/Select";
 
 const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
@@ -28,10 +29,10 @@ function isoKey(iso: string) {
   return keyOf(new Date(iso));
 }
 function timeLabel(iso: string) {
-  return new Date(iso).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  return new Date(iso).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit", timeZone: TZ });
 }
 function dayTitle(iso: string) {
-  return new Date(iso).toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long" });
+  return new Date(iso).toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long", timeZone: TZ });
 }
 
 function monthMatrix(y: number, m: number): Date[] {
@@ -434,6 +435,7 @@ function BookingModal({
     month: "long",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: TZ,
   });
 
   const inputClass =
@@ -495,15 +497,15 @@ function BookingModal({
               />
               <input className={inputClass} placeholder="Имя *" value={name} required onChange={(e) => setName(e.target.value)} />
               <div className="flex gap-2">
-                <select className={`${inputClass} max-w-[10rem]`} value={method} onChange={(e) => setMethod(e.target.value)}>
+                <Select wrapperClassName="w-36 shrink-0" value={method} onChange={(e) => setMethod(e.target.value)}>
                   {CONTACT_METHODS.map((m) => (
                     <option key={m} value={m}>
                       {m}
                     </option>
                   ))}
-                </select>
+                </Select>
                 <input
-                  className={inputClass}
+                  className={`${inputClass} flex-1`}
                   placeholder="@ник или телефон *"
                   value={value}
                   required

@@ -25,8 +25,8 @@ export default function ClientPromptBuilder({ lead }: { lead: Record<string, unk
   }
 
   return (
-    <div className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-zinc-900">Промпт для Claude под этого клиента</h2>
+    <div className="rounded-2xl border-2 border-violet-300 bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-zinc-900">✨ Промпт для нейросети под этого клиента</h2>
       <p className="mt-1 text-sm text-zinc-500">
         Данные анкеты уже подставлены. Скопируй → вставь в DeepSeek или ChatGPT → готовую программу перенеси в конструктор PDF.
       </p>

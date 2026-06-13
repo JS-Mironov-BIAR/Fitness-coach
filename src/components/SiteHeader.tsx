@@ -47,7 +47,7 @@ export default function SiteHeader({ back = false, anketaLink = false }: { back?
           {anketaLink && !back && (
             <Link
               href="/anketa"
-              className="hidden rounded-full px-4 py-2 text-sm font-medium text-zinc-700 transition hover:text-violet-600 sm:inline dark:text-zinc-300 dark:hover:text-violet-300"
+              className="rounded-full border border-violet-200 px-4 py-2 text-sm font-medium text-violet-700 transition hover:bg-violet-50 dark:border-violet-500/30 dark:text-violet-300 dark:hover:bg-violet-500/10"
             >
               Анкета
             </Link>

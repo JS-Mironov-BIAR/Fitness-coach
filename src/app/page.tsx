@@ -95,10 +95,10 @@ export default async function Home() {
             {heroTitle}
           </h1>
           <p className="mt-5 max-w-lg text-lg leading-8 text-zinc-600 dark:text-zinc-400">{heroSubtitle}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/anketa"
-              className="brand-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-lg font-medium text-white shadow-sm transition hover:opacity-90"
+              className="brand-gradient inline-flex w-full items-center justify-center gap-2 rounded-full px-7 py-3.5 text-lg font-medium text-white shadow-sm transition hover:opacity-90 sm:w-auto"
             >
               Заполнить анкету
               <ArrowRightIcon className="h-5 w-5" />
@@ -108,7 +108,7 @@ export default async function Home() {
                 href={s.telegram_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-zinc-300 px-6 py-3.5 text-lg font-medium text-zinc-700 transition hover:bg-white dark:border-white/15 dark:text-zinc-200 dark:hover:bg-white/5"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-zinc-300 px-6 py-3.5 text-lg font-medium text-zinc-700 transition hover:bg-white sm:w-auto dark:border-white/15 dark:text-zinc-200 dark:hover:bg-white/5"
               >
                 <TelegramIcon className="h-5 w-5" /> Написать
               </a>

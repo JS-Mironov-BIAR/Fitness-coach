@@ -51,9 +51,9 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
   }
 
   return (
-    <form onSubmit={save} className="max-w-2xl space-y-6">
+    <form onSubmit={save} className="max-w-2xl space-y-4">
       {/* Тема оформления */}
-      <section className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
         <h2 className="text-lg font-semibold text-zinc-900">Тема оформления сайта</h2>
         <p className="mt-1 text-sm text-zinc-500">Меняет цвета всего сайта и админки. На сайте обновится в течение 5 минут.</p>
         <div className="mt-4 flex flex-wrap gap-2">
@@ -74,7 +74,7 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
       </section>
 
       {/* Контакты */}
-      <section className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
         <h2 className="text-lg font-semibold text-zinc-900">Контакты и соцсети</h2>
         <p className="mt-1 text-sm text-zinc-500">Появятся на сайте и в подвале PDF-программ.</p>
         <label className="mt-4 block text-sm font-medium text-zinc-700">
@@ -105,7 +105,7 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
       </section>
 
       {/* Тексты главной */}
-      <section className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
         <h2 className="text-lg font-semibold text-zinc-900">Тексты главной</h2>
         <p className="mt-1 text-sm text-zinc-500">Пусто = используется текст по умолчанию.</p>
         <label className="mt-4 block text-sm font-medium text-zinc-700">
@@ -123,7 +123,7 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
       </section>
 
       {/* SEO */}
-      <section className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
         <h2 className="text-lg font-semibold text-zinc-900">SEO (поиск Google/Яндекс)</h2>
         <p className="mt-1 text-sm text-zinc-500">Заголовок и описание для поиска и при отправке ссылки в соцсети.</p>
         <label className="mt-4 block text-sm font-medium text-zinc-700">
@@ -142,7 +142,7 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
 
       {err && <p className="text-sm text-violet-600">{err}</p>}
       <div className="flex items-center gap-3">
-        <button type="submit" disabled={saving} className="rounded-full bg-violet-500 px-6 py-2.5 font-medium text-white transition hover:bg-violet-600 disabled:opacity-60">
+        <button type="submit" disabled={saving} className="w-full rounded-full bg-violet-500 px-6 py-2.5 font-medium text-white transition hover:bg-violet-600 disabled:opacity-60 sm:w-auto">
           {saving ? "Сохраняем…" : "Сохранить"}
         </button>
         {saved && <span className="text-sm text-emerald-600">Сохранено ✓ (на сайте обновится в течение 5 минут)</span>}

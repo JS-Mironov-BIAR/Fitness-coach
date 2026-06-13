@@ -22,6 +22,17 @@ export type Slot = {
   title: string | null;
 };
 
+// Часовой пояс Беларуси (UTC+3, без перехода на летнее время)
+export const TZ = "Europe/Minsk";
+export const TZ_OFFSET = "+03:00";
+
+// Дата (YYYY-MM-DD) + время (HH:MM) как местное беларусское → ISO в UTC.
+// Не зависит от часового пояса сервера (на Vercel он UTC).
+export function localToUtcISO(date: string, time: string): string {
+  const t = normalizeTime(time) ?? time;
+  return new Date(`${date}T${t}:00${TZ_OFFSET}`).toISOString();
+}
+
 // ───────── работа со временем (гибкий ввод админа) ─────────
 
 // "10" -> "10:00", "9" -> "09:00", "10:30"/"10.30"/"10 30" -> "10:30"

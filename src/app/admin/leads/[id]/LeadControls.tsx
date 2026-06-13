@@ -52,7 +52,7 @@ export default function LeadControls({
   }
 
   return (
-    <div className="rounded-2xl border border-violet-100 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
       <h2 className="text-lg font-semibold text-zinc-900">Работа с заявкой</h2>
 
       <label className="mt-4 block text-sm font-medium text-zinc-700">Статус</label>
@@ -87,7 +87,7 @@ export default function LeadControls({
         <button
           onClick={save}
           disabled={saving}
-          className="rounded-full bg-violet-500 px-6 py-2.5 font-medium text-white transition hover:bg-violet-600 disabled:opacity-60"
+          className="w-full rounded-full bg-violet-500 px-6 py-2.5 font-medium text-white transition hover:bg-violet-600 disabled:opacity-60 sm:w-auto"
         >
           {saving ? "Сохраняем…" : "Сохранить"}
         </button>
@@ -109,7 +109,7 @@ export default function LeadControls({
           onClick={() => !deleting && setConfirmOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl"
+            className="w-full max-w-sm rounded-2xl bg-white p-5 text-center shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold text-zinc-900">Удалить заявку?</h3>
