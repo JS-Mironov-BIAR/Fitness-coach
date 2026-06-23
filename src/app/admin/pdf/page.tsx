@@ -40,6 +40,7 @@ export default async function AdminPdfPage() {
   const contacts = [
     settings.instagram_url ? `Instagram: ${settings.instagram_url}` : null,
     settings.telegram_url ? `Telegram: ${settings.telegram_url}` : null,
+    settings.vk_url ? `VK: ${settings.vk_url}` : null,
     settings.phone || null,
   ]
     .filter(Boolean)

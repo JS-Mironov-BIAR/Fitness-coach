@@ -12,6 +12,7 @@ import {
   ArrowRightIcon,
   InstagramIcon,
   TelegramIcon,
+  VkIcon,
   PhoneIcon,
 } from "@/components/icons";
 
@@ -28,21 +29,26 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = s.seo_title || SITE_DEFAULTS.seo_title;
   const description = s.seo_description || SITE_DEFAULTS.seo_description;
   const keywords = s.seo_keywords || SITE_DEFAULTS.seo_keywords;
+  const siteName = s.site_name || SITE_DEFAULTS.site_name;
+  const ogTitle = s.og_title || title;
+  const ogDesc = s.og_description || description;
+  const images = s.og_image_url ? [{ url: s.og_image_url }] : undefined;
   return {
     title,
     description,
     keywords,
     alternates: { canonical: SITE_URL },
     openGraph: {
-      title,
-      description,
+      title: ogTitle,
+      description: ogDesc,
       url: SITE_URL,
-      siteName: "halvafit",
+      siteName,
       locale: "ru_RU",
       type: "website",
+      ...(images ? { images } : {}),
     },
-    twitter: { card: "summary_large_image", title, description },
-    other: { "geo.region": "BY", "geo.placename": "Гомель", "geo.position": "52.4345;30.9754" },
+    twitter: { card: "summary_large_image", title: ogTitle, description: ogDesc, ...(images ? { images } : {}) },
+    other: { "geo.region": "BY", "geo.placename": s.biz_city || SITE_DEFAULTS.biz_city },
   };
 }
 
@@ -58,8 +64,9 @@ export default async function Home() {
   const headerSocials = [
     s.instagram_url ? { href: s.instagram_url, type: "instagram" as const, label: "Instagram" } : null,
     s.telegram_url ? { href: s.telegram_url, type: "telegram" as const, label: "Telegram" } : null,
+    s.vk_url ? { href: s.vk_url, type: "vk" as const, label: "ВКонтакте" } : null,
     s.phone ? { href: `tel:${s.phone.replace(/[^\d+]/g, "")}`, type: "phone" as const, label: s.phone } : null,
-  ].filter(Boolean) as { href: string; type: "instagram" | "telegram" | "phone"; label: string }[];
+  ].filter(Boolean) as { href: string; type: "instagram" | "telegram" | "vk" | "phone"; label: string }[];
 
   const igPosts = (s.instagram_posts || "")
     .split(/\n+/)
@@ -70,17 +77,18 @@ export default async function Home() {
   const socials = [
     s.instagram_url && { href: s.instagram_url, Icon: InstagramIcon, label: "Instagram", external: true },
     s.telegram_url && { href: s.telegram_url, Icon: TelegramIcon, label: "Telegram", external: true },
+    s.vk_url && { href: s.vk_url, Icon: VkIcon, label: "ВКонтакте", external: true },
     s.phone && { href: `tel:${s.phone.replace(/[^\d+]/g, "")}`, Icon: PhoneIcon, label: s.phone, external: false },
   ].filter(Boolean) as { href: string; Icon: typeof PhoneIcon; label: string; external: boolean }[];
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HealthAndBeautyBusiness",
-    name: "halvafit",
+    name: s.site_name || SITE_DEFAULTS.site_name,
     description: seoDescription,
     url: SITE_URL,
-    areaServed: ["Гомель", "Минск", "Беларусь"],
-    address: { "@type": "PostalAddress", addressLocality: "Гомель", addressCountry: "BY" },
+    areaServed: (s.biz_area || SITE_DEFAULTS.biz_area).split(",").map((x) => x.trim()).filter(Boolean),
+    address: { "@type": "PostalAddress", addressLocality: s.biz_city || SITE_DEFAULTS.biz_city, addressCountry: "BY" },
     ...(s.phone ? { telephone: s.phone } : {}),
     ...(socials.length ? { sameAs: socials.filter((x) => x.external).map((x) => x.href) } : {}),
   };

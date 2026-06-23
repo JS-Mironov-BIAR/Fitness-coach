@@ -12,6 +12,7 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
   const [f, setF] = useState({
     instagram_url: initial.instagram_url ?? "",
     telegram_url: initial.telegram_url ?? "",
+    vk_url: initial.vk_url ?? "",
     phone: initial.phone ?? "",
     hero_title: initial.hero_title ?? "",
     hero_subtitle: initial.hero_subtitle ?? "",
@@ -19,6 +20,12 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
     seo_title: initial.seo_title ?? "",
     seo_description: initial.seo_description ?? "",
     seo_keywords: initial.seo_keywords ?? "",
+    site_name: initial.site_name ?? "",
+    og_title: initial.og_title ?? "",
+    og_description: initial.og_description ?? "",
+    og_image_url: initial.og_image_url ?? "",
+    biz_city: initial.biz_city ?? "",
+    biz_area: initial.biz_area ?? "",
     accent_theme: initial.accent_theme ?? "violet",
     instagram_posts: initial.instagram_posts ?? "",
   });
@@ -86,6 +93,10 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
           <input value={f.telegram_url} onChange={(e) => set("telegram_url", e.target.value)} placeholder="https://t.me/halvafit" className={inputCls} />
         </label>
         <label className="mt-3 block text-sm font-medium text-zinc-700">
+          ВКонтакте (ссылка)
+          <input value={f.vk_url} onChange={(e) => set("vk_url", e.target.value)} placeholder="https://vk.com/halvafit" className={inputCls} />
+        </label>
+        <label className="mt-3 block text-sm font-medium text-zinc-700">
           Телефон
           <input value={f.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+375 ..." className={inputCls} />
         </label>
@@ -137,6 +148,36 @@ export default function SettingsForm({ initial }: { initial: SiteSettings }) {
         <label className="mt-3 block text-sm font-medium text-zinc-700">
           Ключевые слова (через запятую)
           <textarea value={f.seo_keywords} onChange={(e) => set("seo_keywords", e.target.value)} rows={2} placeholder={SITE_DEFAULTS.seo_keywords} className={inputCls} />
+        </label>
+        <label className="mt-3 block text-sm font-medium text-zinc-700">
+          Заголовок для соцсетей (OG)
+          <input value={f.og_title} onChange={(e) => set("og_title", e.target.value)} placeholder="пусто = берётся SEO-заголовок" className={inputCls} />
+        </label>
+        <label className="mt-3 block text-sm font-medium text-zinc-700">
+          Описание для соцсетей (OG)
+          <textarea value={f.og_description} onChange={(e) => set("og_description", e.target.value)} rows={2} placeholder="пусто = берётся SEO-описание" className={inputCls} />
+        </label>
+        <label className="mt-3 block text-sm font-medium text-zinc-700">
+          Картинка-превью для ссылок (URL)
+          <input value={f.og_image_url} onChange={(e) => set("og_image_url", e.target.value)} placeholder="https://…/preview.jpg — пусто = авто-картинка halvafit" className={inputCls} />
+        </label>
+      </section>
+
+      {/* Бизнес / микроразметка */}
+      <section className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
+        <h2 className="text-lg font-semibold text-zinc-900">Данные о бизнесе (поиск и карты)</h2>
+        <p className="mt-1 text-sm text-zinc-500">Идут в микроразметку (Google/Яндекс понимают, что это за бизнес и где).</p>
+        <label className="mt-4 block text-sm font-medium text-zinc-700">
+          Название
+          <input value={f.site_name} onChange={(e) => set("site_name", e.target.value)} placeholder={SITE_DEFAULTS.site_name} className={inputCls} />
+        </label>
+        <label className="mt-3 block text-sm font-medium text-zinc-700">
+          Город
+          <input value={f.biz_city} onChange={(e) => set("biz_city", e.target.value)} placeholder={SITE_DEFAULTS.biz_city} className={inputCls} />
+        </label>
+        <label className="mt-3 block text-sm font-medium text-zinc-700">
+          Города / регионы обслуживания (через запятую)
+          <input value={f.biz_area} onChange={(e) => set("biz_area", e.target.value)} placeholder={SITE_DEFAULTS.biz_area} className={inputCls} />
         </label>
       </section>
 

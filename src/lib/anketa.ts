@@ -82,10 +82,11 @@ export const ANKETA_GROUPS: AnketaGroup[] = [
     emoji: "🥗",
     fields: [
       { name: "allergies", label: "Аллергии и непереносимости", type: "textarea", full: true },
-      { name: "food_prefs", label: "Что любишь и что не ешь?", type: "textarea", full: true },
+      { name: "food_prefs", label: "Предпочтения в еде: что любите и что не любите", type: "textarea", full: true },
       { name: "meals_per_day", label: "Привычное число приёмов пищи", type: "number" },
-      { name: "food_budget", label: "Бюджет на питание (примерно)", type: "text" },
-      { name: "diet_experience", label: "Опыт диет — что уже пробовала?", type: "textarea", full: true },
+      { name: "food_budget", label: "Бюджет на питание, BYN", type: "text", placeholder: "например, 300" },
+      { name: "food_budget_period", label: "Бюджет на период", type: "select", options: ["Неделя", "Месяц"] },
+      { name: "diet_experience", label: "Опыт диет — что уже пробовал(а)?", type: "textarea", full: true },
     ],
   },
   {

@@ -12,6 +12,7 @@ export default async function TermsPage() {
     [
       s.telegram_url ? `Telegram: ${s.telegram_url}` : null,
       s.instagram_url ? `Instagram: ${s.instagram_url}` : null,
+      s.vk_url ? `VK: ${s.vk_url}` : null,
       s.phone ? `тел.: ${s.phone}` : null,
     ]
       .filter(Boolean)

@@ -198,6 +198,17 @@ export function TelegramIcon(p: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function VkIcon(p: SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" {...p}>
+      <rect width="24" height="24" rx="6" fill="currentColor" />
+      <text x="12" y="15.5" textAnchor="middle" fontSize="8.5" fontWeight="700" fontFamily="Arial, Helvetica, sans-serif" fill="#ffffff">
+        VK
+      </text>
+    </svg>
+  );
+}
+
 export function PhoneIcon(p: SVGProps<SVGSVGElement>) {
   return (
     <Svg {...p}>

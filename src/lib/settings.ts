@@ -6,6 +6,7 @@ export const SITE_URL = "https://fitness-coach-three-livid.vercel.app";
 export type SiteSettings = {
   instagram_url: string | null;
   telegram_url: string | null;
+  vk_url: string | null;
   phone: string | null;
   hero_title: string | null;
   hero_subtitle: string | null;
@@ -13,6 +14,12 @@ export type SiteSettings = {
   seo_title: string | null;
   seo_description: string | null;
   seo_keywords: string | null;
+  site_name: string | null;
+  og_title: string | null;
+  og_description: string | null;
+  og_image_url: string | null;
+  biz_city: string | null;
+  biz_area: string | null;
   accent_theme: string | null;
   instagram_posts: string | null;
 };
@@ -20,6 +27,7 @@ export type SiteSettings = {
 const EMPTY: SiteSettings = {
   instagram_url: null,
   telegram_url: null,
+  vk_url: null,
   phone: null,
   hero_title: null,
   hero_subtitle: null,
@@ -27,6 +35,12 @@ const EMPTY: SiteSettings = {
   seo_title: null,
   seo_description: null,
   seo_keywords: null,
+  site_name: null,
+  og_title: null,
+  og_description: null,
+  og_image_url: null,
+  biz_city: null,
+  biz_area: null,
   accent_theme: null,
   instagram_posts: null,
 };
@@ -49,6 +63,9 @@ export const SITE_DEFAULTS = {
     "Помогаю девушкам с фигурой и техникой: занятия в зале в Гомеле и онлайн по всей Беларуси. Питание без жёстких диет, сопровождение и поддержка — мягко, без криков и стыда.",
   seo_keywords:
     "фитнес Гомель, занятия фитнесом Гомель, фитнес для девушек, похудение Гомель, фитнес онлайн Беларусь, фитнес Минск, тренировки и питание, halvafit",
+  site_name: "halvafit",
+  biz_city: "Гомель",
+  biz_area: "Гомель, Минск, Беларусь",
 };
 
 export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
@@ -56,7 +73,7 @@ export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
     const { data } = await supabaseAdmin()
       .from("site_settings")
       .select(
-        "instagram_url, telegram_url, phone, hero_title, hero_subtitle, hero_badge, seo_title, seo_description, seo_keywords, accent_theme, instagram_posts",
+        "instagram_url, telegram_url, vk_url, phone, hero_title, hero_subtitle, hero_badge, seo_title, seo_description, seo_keywords, site_name, og_title, og_description, og_image_url, biz_city, biz_area, accent_theme, instagram_posts",
       )
       .eq("id", 1)
       .single();

@@ -16,8 +16,9 @@ export default async function AnketaPage() {
   const headerSocials = [
     s.instagram_url ? { href: s.instagram_url, type: "instagram" as const, label: "Instagram" } : null,
     s.telegram_url ? { href: s.telegram_url, type: "telegram" as const, label: "Telegram" } : null,
+    s.vk_url ? { href: s.vk_url, type: "vk" as const, label: "ВКонтакте" } : null,
     s.phone ? { href: `tel:${s.phone.replace(/[^\d+]/g, "")}`, type: "phone" as const, label: s.phone } : null,
-  ].filter(Boolean) as { href: string; type: "instagram" | "telegram" | "phone"; label: string }[];
+  ].filter(Boolean) as { href: string; type: "instagram" | "telegram" | "vk" | "phone"; label: string }[];
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-violet-50 to-white font-sans dark:from-zinc-950 dark:to-black">

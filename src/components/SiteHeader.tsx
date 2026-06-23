@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
-import { ChevronLeftIcon, InstagramIcon, TelegramIcon, PhoneIcon, MenuIcon, CloseIcon } from "@/components/icons";
+import { ChevronLeftIcon, InstagramIcon, TelegramIcon, VkIcon, PhoneIcon, MenuIcon, CloseIcon } from "@/components/icons";
 
-export type HeaderSocial = { href: string; type: "instagram" | "telegram" | "phone"; label: string };
+export type HeaderSocial = { href: string; type: "instagram" | "telegram" | "vk" | "phone"; label: string };
 
-const ICONS = { instagram: InstagramIcon, telegram: TelegramIcon, phone: PhoneIcon };
+const ICONS = { instagram: InstagramIcon, telegram: TelegramIcon, vk: VkIcon, phone: PhoneIcon };
 
 function SocialIcon({ s, size = "h-[18px] w-[18px]" }: { s: HeaderSocial; size?: string }) {
   const Icon = ICONS[s.type];
